@@ -6,6 +6,7 @@ import lee.code.shops.enums.ShopType;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.utils.CoreUtil;
 import lee.code.shops.utils.ItemUtil;
+import lee.code.shops.utils.ShopSignUtil;
 import lee.code.shops.utils.VariableUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -14,9 +15,9 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.*;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.WallSign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +35,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class ShopSignListener implements Listener {
@@ -79,18 +79,14 @@ public class ShopSignListener implements Listener {
     }
     final double value = Double.parseDouble(valueString);
     final Block block = e.getBlock();
-    final BlockData blockData = block.getBlockData();
-    if (!(blockData instanceof final Directional directional)) {
-      System.out.println("NOT SIGN");
+    if (!(block.getBlockData() instanceof Directional directional)) {
+      System.out.println("Not directional sign");
       return;
     }
-
-    //TODO check if hanging sign
-    if ((Sign)e.getBlock() instanceof HangingSign) {
+    if (block.getType().name().endsWith("HANGING_SIGN")) {
       System.out.println("Hanging sign");
       return;
     }
-
     final Block blockBehind = block.getRelative(directional.getFacing().getOppositeFace());
     if (!shops.getData().getSupportedSignBlocks().contains(blockBehind.getType())) {
       System.out.println("NOT SUPPORTED SIGN BLOCK");
@@ -129,9 +125,7 @@ public class ShopSignListener implements Listener {
       CoreUtil.parseValue(targetItemAmount),
     }), targetItem));
     newLines.add(Lang.SHOP_SIGN_COST.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(targetItemAmount)})}));
-    for (int i = 0; i < newLines.size(); i++) {
-      e.line(i, newLines.get(i));
-    }
+    for (int i = 0; i < newLines.size(); i++) e.line(i, newLines.get(i));
 
     final TileState state = (TileState) block.getState();
     final PersistentDataContainer signContainer = state.getPersistentDataContainer();
@@ -149,6 +143,96 @@ public class ShopSignListener implements Listener {
     signContainer.set(shopPrice, PersistentDataType.DOUBLE, value);
     signContainer.set(shopProfit, PersistentDataType.DOUBLE, 0.0);
     state.update();
+  }
+
+  @EventHandler
+  public void onShopInteract(PlayerInteractEvent e) {
+    if (!e.getAction().isRightClick()) return;
+    final Player player = e.getPlayer();
+    final UUID playerID = player.getUniqueId();
+    final Block block = e.getClickedBlock();
+    if (block == null) return;
+    if (block.getState().getBlockData() instanceof WallSign) {
+      final Directional directional = (Directional) block.getState().getBlockData();
+      final Sign sign = (Sign) block.getState();
+      final TileState shopSignTile = (TileState) block.getState();
+      final UUID ownerID = getShopOwner(shopSignTile);
+      if (ownerID == null) return;
+      e.setCancelled(true);
+      System.out.println("Canceled event");
+      final ItemStack item = getShopItem(shopSignTile);
+      if (item == null) return;
+      final ShopType shopType = getShopType(shopSignTile);
+      if (shopType == null) return;
+      final double cost = getShopValue(shopSignTile);
+      final int amount = getShopAmount(shopSignTile);
+      final double profit = getShopProfit(shopSignTile);
+      final Block shopBlock = block.getRelative(directional.getFacing().getOppositeFace());
+      final Inventory shopBlockInventory = getContainerInventory(shopBlock);
+      if (ownerID.equals(playerID)) {
+        sendShopInfoMessage(player, sign, shopBlockInventory, item, shopType, amount, cost, profit);
+        return;
+      }
+      switch (shopType) {
+        case SELL -> {
+          final int freeSpace = ShopSignUtil.getFreeSpace(shopBlockInventory, item);
+          if (freeSpace < amount) {
+            updateSignTitle(sign, true);
+            System.out.println("NOT ENOUGH SPACE IN SHOP CONTAINER");
+            return;
+          }
+          if (EcoAPI.getBalance(playerID) < cost) {
+            System.out.println("YOU DO NOT HAVE ENOUGH MONEY");
+            return;
+          }
+          final int shopBlockStock = ItemUtil.getItemAmount(player, item);
+          if (shopBlockStock < amount) {
+            System.out.println("NOT ENOUGH ITEMS TO SELL");
+            return;
+          }
+          EcoAPI.removeBalance(ownerID, cost);
+          EcoAPI.addBalance(playerID, cost);
+          setShopProfit(shopSignTile, profit + cost);
+          ShopSignUtil.addShopItems(shopBlock, item, amount);
+          ItemUtil.removePlayerItems(player, item, amount, false);
+          updateSignTitle(sign, (shopBlockStock - amount) < amount);
+          System.out.println("You sold items and they were stored in shop");
+        }
+        case BUY -> {
+          final int stock = ShopSignUtil.getItemAmount(shopBlockInventory, item);
+          if (stock < amount) {
+            updateSignTitle(sign, true);
+            System.out.println("NOT ENOUGH STOCK");
+            return;
+          }
+          if (EcoAPI.getBalance(playerID) < cost) {
+            System.out.println("NOT ENOUGH MONEY");
+            return;
+          }
+          final int shopBlockFreeSpace = ItemUtil.getFreeSpace(player, item);
+          if (shopBlockFreeSpace < amount) {
+            System.out.println("Player does not have enough space");
+            return;
+          }
+          EcoAPI.removeBalance(playerID, cost);
+          EcoAPI.addBalance(ownerID, cost);
+          setShopProfit(shopSignTile, profit + cost);
+          ShopSignUtil.removeShopItems(shopBlock, item, amount);
+          ItemUtil.giveItem(player, item, amount);
+          updateSignTitle(sign, (shopBlockFreeSpace - amount) < amount);
+          System.out.println("You were given item and items were removed from shop container");
+        }
+      }
+    } else if (!shops.getData().getSupportedSignBlocks().contains(block.getType())) {
+      final TileState shopSign = getShopSign(block);
+      if (shopSign == null) return;
+      final UUID ownerID = getShopOwner(shopSign);
+      if (ownerID == null) return;
+      if (!ownerID.equals(playerID)) {
+        System.out.println("You do not own the shop!");
+        e.setCancelled(true);
+      }
+    }
   }
 
   @EventHandler
@@ -203,62 +287,6 @@ public class ShopSignListener implements Listener {
     if (shopSign != null) e.setCancelled(true);
   }
 
-  @EventHandler
-  public void onShopInteract(PlayerInteractEvent e) {
-    if (!e.getAction().isRightClick()) return;
-    final Player player = e.getPlayer();
-    final UUID playerID = player.getUniqueId();
-    final Block block = e.getClickedBlock();
-    if (block == null) return;
-    if (!shops.getData().getSupportedSignBlocks().contains(block.getType())) {
-      final TileState shopSign = getShopSign(block);
-      if (shopSign == null) return;
-      final UUID ownerID = getShopOwner(shopSign);
-      if (ownerID == null) return;
-      if (!ownerID.equals(playerID)) {
-        System.out.println("You do not own the shop!");
-        e.setCancelled(true);
-      }
-    } else if (block.getState().getBlockData() instanceof WallSign) {
-      final Directional directional = (Directional) block.getState().getBlockData();
-      final TileState shopSign = (TileState) block.getState();
-      final UUID ownerID = getShopOwner(shopSign);
-      if (ownerID == null) return;
-      final ItemStack item = getShopItem(shopSign);
-      if (item == null) return;
-      final double value = getShopValue(shopSign);
-      final int amount = getShopAmount(shopSign);
-      final ShopType shopType = getShopType(shopSign);
-      if (shopType == null) return;
-      final Block shopBlock = block.getRelative(directional.getFacing().getOppositeFace());
-      final Inventory shopBlockInventory = getContainerInventory(shopBlock);
-      switch (shopType) {
-        case SELL -> {
-
-        }
-        case BUY -> {
-          final int stock = getItemAmount(shopBlockInventory, item);
-          if (stock < amount) {
-            System.out.println("NOT ENOUGH STOCK");
-            return;
-          }
-          final double cost = value * amount;
-          if (EcoAPI.getBalance(playerID) < cost) {
-            System.out.println("NOT ENOUGH MONEY");
-            return;
-          }
-          final boolean removedFromShop = removeShopItems(shopBlock, item, amount);
-          if (!removedFromShop) {
-            System.out.println("Could not remove from shop");
-            return;
-          }
-          ItemUtil.giveItem(player, item, amount);
-          System.out.println("You were given item and items were removed from shop container");
-        }
-      }
-    }
-  }
-
   private TileState getShopSign(Block block) {
     final BlockState blockState = block.getState();
     final BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
@@ -306,6 +334,35 @@ public class ShopSignListener implements Listener {
     return null;
   }
 
+  private void sendShopInfoMessage(Player player, Sign sign, Inventory shopBlockInventory, ItemStack item, ShopType shopType, int amount, double cost, double profit) {
+    final List<Component> shopInfoLines = new ArrayList<>();
+    shopInfoLines.add(Lang.SHOP_SIGN_INFO_HEADER.getComponent(null));
+    shopInfoLines.add(Component.text(" "));
+    final String shopTypeColored = shopType.equals(ShopType.BUY) ? Lang.BUY.getString() : Lang.SELL.getString();
+    shopInfoLines.add(Lang.SHOP_SIGN_INFO_TYPE.getComponent(new String[]{shopTypeColored}));
+    shopInfoLines.add(VariableUtil.parseVariables(Lang.SHOP_SIGN_INFO_ITEM.getComponent(null), item));
+    shopInfoLines.add(Lang.SHOP_SIGN_INFO_AMOUNT.getComponent(new String[]{CoreUtil.parseValue(amount)}));
+    shopInfoLines.add(Lang.SHOP_SIGN_INFO_STOCK.getComponent(new String[]{CoreUtil.parseValue(ShopSignUtil.getItemAmount(shopBlockInventory, item))}));
+    shopInfoLines.add(Lang.SHOP_SIGN_INFO_PRICE.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})}));
+    if (shopType.equals(ShopType.BUY)) shopInfoLines.add(Lang.SHOP_SIGN_INFO_SOLD.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(profit)})}));
+    else shopInfoLines.add(Lang.SHOP_SIGN_INFO_BOUGHT.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(profit)})}));
+    shopInfoLines.add(Component.text(" "));
+    shopInfoLines.add(Lang.SHOP_SIGN_INFO_FOOTER.getComponent(null));
+    for (Component line : shopInfoLines) player.sendMessage(line);
+    if (shopType.equals(ShopType.BUY)) updateSignTitle(sign, ShopSignUtil.getItemAmount(shopBlockInventory, item) < amount);
+    else if (shopType.equals(ShopType.SELL)) updateSignTitle(sign, ShopSignUtil.getFreeSpace(shopBlockInventory, item) < amount);
+  }
+
+  private void updateSignTitle(Sign sign, boolean isFullOrOutOfStock) {
+    if (isFullOrOutOfStock) {
+      sign.getSide(Side.FRONT).line(0, Lang.SHOP_SIGN_TITLE_OUT_OF_STOCK_OR_FULL.getComponent(null));
+      sign.update();
+    } else {
+      sign.getSide(Side.FRONT).line(0, Lang.SHOP_SIGN_TITLE.getComponent(null));
+      sign.update();
+    }
+  }
+
   private Inventory getContainerInventory(Block container) {
     if (container.getState() instanceof ShulkerBox shulkerBox) return shulkerBox.getInventory();
     else if (container.getState() instanceof Barrel barrel) return barrel.getInventory();
@@ -333,6 +390,13 @@ public class ShopSignListener implements Listener {
     return container.getOrDefault(key, PersistentDataType.DOUBLE, 0.0);
   }
 
+  private void setShopProfit(TileState tileState, double profit) {
+    final PersistentDataContainer container = tileState.getPersistentDataContainer();
+    final NamespacedKey key = new NamespacedKey(shops, "shop-profit");
+    container.set(key, PersistentDataType.DOUBLE, profit);
+    tileState.update();
+  }
+
   private int getShopAmount(TileState tileState) {
     final PersistentDataContainer container = tileState.getPersistentDataContainer();
     final NamespacedKey key = new NamespacedKey(shops, "shop-amount");
@@ -353,58 +417,5 @@ public class ShopSignListener implements Listener {
     final String item = container.get(key, PersistentDataType.STRING);
     if (item != null) return ItemUtil.parseItemStack(item);
     else return null;
-  }
-
-  private boolean removeShopItems(Block container, ItemStack item, int amount) {
-    if (container.getState() instanceof Chest chest) {
-      final Inventory inventory = chest.getInventory();
-      if (getItemAmount(inventory, item) >= amount) {
-        consumeItems(inventory, item, amount);
-        return true;
-      }
-
-    } else if (container.getState() instanceof ShulkerBox shulkerBox) {
-      final Inventory inventory = shulkerBox.getInventory();
-      if (getItemAmount(inventory, item) >= amount) {
-        consumeItems(inventory, item, amount);
-        return true;
-      }
-
-    } else if (container.getState() instanceof Barrel barrel) {
-      final Inventory inventory = barrel.getInventory();
-      if (getItemAmount(inventory, item) >= amount) {
-        consumeItems(inventory, item, amount);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private void consumeItems(Inventory inventory, ItemStack item, int amount) {
-    final Material mat = item.getType();
-    final Map<Integer, ? extends ItemStack> ammo = inventory.all(mat);
-    int found = 0;
-    for (ItemStack stack : ammo.values()) found += stack.getAmount();
-    if (amount > found) return;
-    for (Integer index : ammo.keySet()) {
-      final ItemStack stack = ammo.get(index);
-      if (stack.isSimilar(item)) {
-        final int removed = Math.min(amount, stack.getAmount());
-        amount -= removed;
-        if (stack.getAmount() == removed) inventory.setItem(index, null);
-        else stack.setAmount(stack.getAmount() - removed);
-        if (amount <= 0) break;
-      }
-    }
-  }
-
-  private int getItemAmount(Inventory inventory, ItemStack item) {
-    int amount = 0;
-    for (int i = 0; i < inventory.getSize(); i++) {
-      final ItemStack slot = inventory.getItem(i);
-      if (slot == null || !slot.isSimilar(item)) continue;
-      amount += slot.getAmount();
-    }
-    return amount;
   }
 }
