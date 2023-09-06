@@ -1,0 +1,11 @@
+name: GoldmanShops
+version: ${version}
+main: lee.code.shops.Shops
+api-version: 1.20
+author: Lee
+folia-supported: true
+depend: [GoldmanEconomy, GoldmanColors]
+commands:
+  shop:
+    description: Opens server shop menu.
+    permission: towns.command.shop
