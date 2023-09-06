@@ -175,8 +175,8 @@ public class ShopSignListener implements Listener {
       }
       switch (shopType) {
         case SELL -> {
-          final int freeSpace = ShopSignUtil.getFreeSpace(shopBlockInventory, item);
-          if (freeSpace < amount) {
+          final int shopFreeSpace = ShopSignUtil.getFreeSpace(shopBlockInventory, item);
+          if (shopFreeSpace < amount) {
             updateSignTitle(sign, true);
             System.out.println("NOT ENOUGH SPACE IN SHOP CONTAINER");
             return;
@@ -185,8 +185,7 @@ public class ShopSignListener implements Listener {
             System.out.println("YOU DO NOT HAVE ENOUGH MONEY");
             return;
           }
-          final int shopBlockStock = ItemUtil.getItemAmount(player, item);
-          if (shopBlockStock < amount) {
+          if (ItemUtil.getItemAmount(player, item) < amount) {
             System.out.println("NOT ENOUGH ITEMS TO SELL");
             return;
           }
@@ -195,12 +194,12 @@ public class ShopSignListener implements Listener {
           setShopProfit(shopSignTile, profit + cost);
           ShopSignUtil.addShopItems(shopBlock, item, amount);
           ItemUtil.removePlayerItems(player, item, amount, false);
-          updateSignTitle(sign, (shopBlockStock - amount) < amount);
+          updateSignTitle(sign, (shopFreeSpace - amount) < amount);
           System.out.println("You sold items and they were stored in shop");
         }
         case BUY -> {
-          final int stock = ShopSignUtil.getItemAmount(shopBlockInventory, item);
-          if (stock < amount) {
+          final int shopStock = ShopSignUtil.getItemAmount(shopBlockInventory, item);
+          if (shopStock < amount) {
             updateSignTitle(sign, true);
             System.out.println("NOT ENOUGH STOCK");
             return;
@@ -218,8 +217,7 @@ public class ShopSignListener implements Listener {
           setShopProfit(shopSignTile, profit + cost);
           ShopSignUtil.removeShopItems(shopBlock, item, amount);
           ItemUtil.giveItem(player, item, amount);
-          System.out.println("AMOUNT: " + amount + " LEFT OVER: " + (stock - amount));
-          updateSignTitle(sign, (stock - amount) < amount);
+          updateSignTitle(sign, (shopStock - amount) < amount);
           System.out.println("You were given item and items were removed from shop container");
         }
       }
