@@ -50,7 +50,7 @@ public class ShopItemMenu extends MenuGUI {
   }
 
   private MenuButton createInterfaceButton(Player player, ShopInterfaceItem shopInterfaceItem) {
-    switch (shopInterfaceItem.getShopInterfaceType()) {
+    switch (shopInterfaceItem.getShopType()) {
       case BUY -> {
         final int amount = shopInterfaceItem.getAmount() == 0 ? ItemUtil.getFreeSpace(player, item) : shopInterfaceItem.getAmount();
         final double value = data.getItemBuyValue(item);

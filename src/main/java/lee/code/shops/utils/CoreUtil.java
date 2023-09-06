@@ -6,9 +6,11 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.text.DecimalFormat;
+import java.util.regex.Pattern;
 
 public class CoreUtil {
   private final static DecimalFormat amountFormatter = new DecimalFormat("#,###.##");
+  private final static Pattern numberDoublePattern = Pattern.compile("^(?=.*[1-9])(\\d*\\.?\\d*)$");
 
   public static String parseValue(int value) {
     if (value == 0) return "0";
@@ -29,5 +31,9 @@ public class CoreUtil {
   public static String capitalize(String message) {
     final String format = message.toLowerCase().replaceAll("_", " ");
     return WordUtils.capitalize(format);
+  }
+
+  public static boolean isPositiveDoubleNumber(String numbers) {
+    return numberDoublePattern.matcher(numbers).matches();
   }
 }

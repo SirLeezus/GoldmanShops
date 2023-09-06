@@ -3,6 +3,7 @@ package lee.code.shops;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import lee.code.shops.commands.CommandManager;
 import lee.code.shops.commands.TabCompletion;
+import lee.code.shops.listeners.ShopSignListener;
 import lee.code.shops.menus.system.MenuListener;
 import lee.code.shops.menus.system.MenuManager;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class Shops extends JavaPlugin {
 
   private void registerListeners() {
     getServer().getPluginManager().registerEvents(new MenuListener(menuManager), this);
+    getServer().getPluginManager().registerEvents(new ShopSignListener(this), this);
   }
 
   private void registerCommands() {
