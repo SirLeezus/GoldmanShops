@@ -209,8 +209,7 @@ public class ShopSignListener implements Listener {
             System.out.println("NOT ENOUGH MONEY");
             return;
           }
-          final int shopBlockFreeSpace = ItemUtil.getFreeSpace(player, item);
-          if (shopBlockFreeSpace < amount) {
+          if ( ItemUtil.getFreeSpace(player, item) < amount) {
             System.out.println("Player does not have enough space");
             return;
           }
@@ -219,7 +218,8 @@ public class ShopSignListener implements Listener {
           setShopProfit(shopSignTile, profit + cost);
           ShopSignUtil.removeShopItems(shopBlock, item, amount);
           ItemUtil.giveItem(player, item, amount);
-          updateSignTitle(sign, (shopBlockFreeSpace - amount) < amount);
+          System.out.println("AMOUNT: " + amount + " LEFT OVER: " + (stock - amount));
+          updateSignTitle(sign, (stock - amount) < amount);
           System.out.println("You were given item and items were removed from shop container");
         }
       }
