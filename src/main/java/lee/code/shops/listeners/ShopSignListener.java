@@ -22,7 +22,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
@@ -262,15 +261,6 @@ public class ShopSignListener implements Listener {
         if (ownerID != null) e.blockList().remove(block);
       }
     }
-  }
-
-  @EventHandler
-  public void onShopHopperMove(InventoryMoveItemEvent e) {
-    if (e.getSource().getLocation() == null) return;
-    final Block block = e.getSource().getLocation().getBlock();
-    if (!shops.getData().getSupportedSignBlocks().contains(block.getType())) return;
-    final TileState shopSign = getShopSign(block);
-    if (shopSign != null) e.setCancelled(true);
   }
 
   private Sign getShopSign(Block block) {
