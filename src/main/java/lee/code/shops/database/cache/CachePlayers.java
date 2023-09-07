@@ -4,9 +4,7 @@ import lee.code.shops.database.DatabaseManager;
 import lee.code.shops.database.cache.data.ShopSpawnData;
 import lee.code.shops.database.handlers.DatabaseHandler;
 import lee.code.shops.database.tables.PlayerTable;
-import lee.code.shops.utils.CoreUtil;
 import lombok.Getter;
-import org.bukkit.Location;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,5 +34,15 @@ public class CachePlayers extends DatabaseHandler {
     final PlayerTable playerTable = new PlayerTable(uuid);
     setPlayerTable(playerTable);
     createPlayerDatabase(playerTable);
+  }
+
+  public boolean hasNotificationsOn(UUID uuid) {
+    return getPlayerTable(uuid).isNotifications();
+  }
+
+  public void setNotifications(UUID uuid, boolean result) {
+    final PlayerTable playerTable = getPlayerTable(uuid);
+    playerTable.setNotifications(result);
+    updatePlayerDatabase(playerTable);
   }
 }

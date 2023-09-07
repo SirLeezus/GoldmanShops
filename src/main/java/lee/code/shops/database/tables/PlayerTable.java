@@ -19,7 +19,11 @@ public class PlayerTable {
   @DatabaseField(columnName = "shop_spawn")
   private String shopSpawn;
 
+  @DatabaseField(columnName = "notifications", canBeNull = false)
+  private boolean notifications;
+
   public PlayerTable(UUID uniqueId) {
     this.uniqueId = uniqueId;
+    this.notifications = true;
   }
 }
