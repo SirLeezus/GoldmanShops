@@ -23,7 +23,7 @@ public class SetSpawnCMD extends SubCommand {
 
   @Override
   public String getDescription() {
-    return "Set your shop spawn.";
+    return "Set your player shop spawn.";
   }
 
   @Override

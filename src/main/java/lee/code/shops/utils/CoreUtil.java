@@ -10,7 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -60,5 +60,19 @@ public class CoreUtil {
       .filter(player -> !player.getGameMode().equals(GameMode.SPECTATOR))
       .map(Player::getName)
       .collect(Collectors.toList());
+  }
+
+  public static <K, V extends Comparable<? super V>> HashMap<K, V> sortByValue(Map<K, V> hm, Comparator<V> comparator) {
+    final HashMap<K, V> temp = new LinkedHashMap<>();
+    hm.entrySet().stream()
+      .sorted(Map.Entry.comparingByValue(comparator))
+      .forEachOrdered(entry -> temp.put(entry.getKey(), entry.getValue()));
+    return temp;
+  }
+
+  public static String getTextBeforeCharacter(String input, char character) {
+    final int index = input.indexOf(character);
+    if (index == -1) return input;
+    else return input.substring(0, index);
   }
 }

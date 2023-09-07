@@ -6,4 +6,5 @@ shop {
   setspawn;
   removespawn;
   notifications;
+  help;
 }
