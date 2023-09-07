@@ -7,4 +7,10 @@ shop {
   removespawn;
   notifications;
   help;
+  admin {
+    bypass;
+    removespawn {
+      player brigadier:string single_word;
+    }
+  }
 }

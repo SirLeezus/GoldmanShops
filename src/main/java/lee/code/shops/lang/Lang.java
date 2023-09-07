@@ -17,6 +17,8 @@ public enum Lang {
   COMMAND_SET_SPAWN_SUCCESS("&aYou successfully set your shop spawn!"),
   COMMAND_REMOVE_SPAWN_SUCCESS("&aYou successfully removed your shop spawn!"),
   COMMAND_NOTIFICATIONS_SUCCESS("&aYou successfully toggled player shop purchase notifications {0}&a!"),
+  COMMAND_ADMIN_BYPASS_SUCCESS("&aYou successfully toggled player shop admin bypass {0}&a!"),
+  COMMAND_ADMIN_REMOVE_SPAWN_SUCCESS("&aYou successfully removed &6{0}'s &aplayer shop spawn!"),
   COMMAND_HELP_DIVIDER("&a------------------------------"),
   COMMAND_HELP_TITLE("&a-------- &7[ &#FF9719&lShop Help &7] &a--------"),
   COMMAND_HELP_SUB_COMMAND("&3{0}&b. &e{1}"),
@@ -80,8 +82,9 @@ public enum Lang {
   ERROR_SHOP_SIGN_CREATE_INVALID_FORMAT("&cInvalid shop sign, to learn how to create one correctly run the command &e/shop signhelp&c."),
   ERROR_NOT_CONSOLE_COMMAND("&cThis command does not work in console."),
   ERROR_NO_PLAYER_DATA("&cCould not find any player data for &6{0}&c."),
-  ERROR_COMMAND_SPAWN_NO_SPAWN("&cThe player &6{0} &cdoes nto have a shop spawn set."),
+  ERROR_COMMAND_SPAWN_NO_SPAWN("&cThe player &6{0} &cdoes not have a shop spawn set."),
   ERROR_COMMAND_REMOVE_SPAWN_NO_SPAWN("&cYou don't have a player shop spawn set."),
+  ERROR_COMMAND_ADMIN_REMOVE_SPAWN_NO_SPAWN("&cThe player &6{0} &cdoes not have a player shop spawn."),
 
   ;
   @Getter private final String string;

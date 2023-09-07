@@ -22,8 +22,12 @@ public class PlayerTable {
   @DatabaseField(columnName = "notifications", canBeNull = false)
   private boolean notifications;
 
+  @DatabaseField(columnName = "admin_bypass", canBeNull = false)
+  private boolean adminBypass;
+
   public PlayerTable(UUID uniqueId) {
     this.uniqueId = uniqueId;
     this.notifications = true;
+    this.adminBypass = false;
   }
 }

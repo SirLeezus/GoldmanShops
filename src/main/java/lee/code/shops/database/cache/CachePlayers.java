@@ -45,4 +45,14 @@ public class CachePlayers extends DatabaseHandler {
     playerTable.setNotifications(result);
     updatePlayerDatabase(playerTable);
   }
+
+  public boolean hasAdminBypass(UUID uuid) {
+    return getPlayerTable(uuid).isAdminBypass();
+  }
+
+  public void setAdminBypass(UUID uuid, boolean result) {
+    final PlayerTable playerTable = getPlayerTable(uuid);
+    playerTable.setAdminBypass(result);
+    updatePlayerDatabase(playerTable);
+  }
 }
