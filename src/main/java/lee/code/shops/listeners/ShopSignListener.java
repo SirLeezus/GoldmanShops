@@ -1,5 +1,6 @@
 package lee.code.shops.listeners;
 
+import lee.code.colors.ColorAPI;
 import lee.code.economy.EcoAPI;
 import lee.code.shops.Shops;
 import lee.code.shops.enums.ShopType;
@@ -10,10 +11,7 @@ import lee.code.shops.utils.ShopSignUtil;
 import lee.code.shops.utils.VariableUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.WallSign;
@@ -46,54 +44,46 @@ public class ShopSignListener implements Listener {
 
   @EventHandler
   public void onShopCreate(SignChangeEvent e) {
-    //[shop]
-    // sell/buy
-    // value
-    final Player player = e.getPlayer();
-    final UUID playerID = player.getUniqueId();
     final List<Component> lines = new ArrayList<>(e.lines());
     if (lines.isEmpty()) return;
     final PlainTextComponentSerializer plainTextComponentSerializer = PlainTextComponentSerializer.plainText();
     final String shopString = plainTextComponentSerializer.serialize(lines.get(0));
     if (!shopString.equalsIgnoreCase("[shop]")) return;
-    System.out.println("Shop sign!");
+    final Player player = e.getPlayer();
+    final UUID playerID = player.getUniqueId();
     if (lines.size() < 3) {
-      System.out.println("Wrong format");
-      player.sendMessage(Lang.PREFIX.getComponent(null));
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_INVALID_FORMAT.getComponent(null)));
       return;
     }
     final String option = plainTextComponentSerializer.serialize(lines.get(1));
-    boolean isBuyShop = true;
-    if (option.equalsIgnoreCase("sell")) {
-      System.out.println("SELL SIGN");
-      isBuyShop = false;
-    }
-    if (option.equalsIgnoreCase("buy")) {
-      System.out.println("BUY SIGN");
+    final boolean isBuyShop = !option.equalsIgnoreCase("sell");
+    if (!option.equalsIgnoreCase("buy") && !option.equalsIgnoreCase("sell")) {
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_INVALID_TYPE.getComponent(new String[]{option})));
+      return;
     }
     final ShopType signShopType = isBuyShop ? ShopType.BUY : ShopType.SELL;
     final String valueString = plainTextComponentSerializer.serialize(lines.get(2));
     if (!CoreUtil.isPositiveDoubleNumber(valueString)) {
-      System.out.println("NOT VALUE");
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_INVALID_VALUE.getComponent(new String[]{valueString})));
       return;
     }
     final double value = Double.parseDouble(valueString);
     final Block block = e.getBlock();
     if (!(block.getBlockData() instanceof Directional directional)) {
-      System.out.println("Not directional sign");
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_DIRECTION.getComponent(null)));
       return;
     }
     if (block.getType().name().endsWith("HANGING_SIGN")) {
-      System.out.println("Hanging sign");
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_HANGING_SIGN.getComponent(null)));
       return;
     }
     final Block blockBehind = block.getRelative(directional.getFacing().getOppositeFace());
     if (!shops.getData().getSupportedSignBlocks().contains(blockBehind.getType())) {
-      System.out.println("NOT SUPPORTED SIGN BLOCK");
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_NOT_SUPPORTED_BLOCK.getComponent(new String[]{CoreUtil.capitalize(blockBehind.getType().name())})));
       return;
     }
     if (getShopSign(blockBehind) != null) {
-      System.out.println("THIS CONTAINER ALREADY HAS A SHOP SIGN");
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_ALREADY_HAS_SIGN.getComponent(null)));
       return;
     }
     final Inventory containerInventory = getContainerInventory(blockBehind);
@@ -105,18 +95,17 @@ public class ShopSignListener implements Listener {
       }
     }
     if (targetItem.getType().equals(Material.AIR)) {
-      System.out.println("NO ITEM FOUND");
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_NO_ITEM.getComponent(null)));
       return;
     }
     final int targetItemAmount = targetItem.getAmount();
     targetItem.setAmount(1);
     final String itemString = ItemUtil.serializeItemStack(targetItem);
     if (itemString == null) {
-      System.out.println("NO ITEM FOUND");
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_NO_ITEM.getComponent(null)));
       return;
     }
 
-    System.out.println("Creating shop sign.....");
     final List<Component> newLines = new ArrayList<>();
     newLines.add(Lang.SHOP_SIGN_TITLE.getComponent(null));
     final String shopTypeOption = signShopType.equals(ShopType.BUY) ? Lang.BUY.getString() : Lang.SELL.getString();
@@ -143,6 +132,7 @@ public class ShopSignListener implements Listener {
     signContainer.set(shopPrice, PersistentDataType.DOUBLE, value);
     signContainer.set(shopProfit, PersistentDataType.DOUBLE, 0.0);
     state.update();
+    player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_CREATE_SUCCESS.getComponent(null)));
   }
 
   @EventHandler
@@ -159,7 +149,6 @@ public class ShopSignListener implements Listener {
       final UUID ownerID = getShopOwner(shopSignTile);
       if (ownerID == null) return;
       e.setCancelled(true);
-      System.out.println("Canceled event");
       final ItemStack item = getShopItem(shopSignTile);
       if (item == null) return;
       final ShopType shopType = getShopType(shopSignTile);
@@ -170,7 +159,7 @@ public class ShopSignListener implements Listener {
       final Block shopBlock = block.getRelative(directional.getFacing().getOppositeFace());
       final Inventory shopBlockInventory = getContainerInventory(shopBlock);
       if (ownerID.equals(playerID)) {
-        sendShopInfoMessage(player, sign, shopBlockInventory, item, shopType, amount, cost, profit);
+        sendShopInfoMessage(player, sign, shopBlockInventory, item, ownerID, shopType, amount, cost, profit);
         return;
       }
       switch (shopType) {
@@ -178,15 +167,15 @@ public class ShopSignListener implements Listener {
           final int shopFreeSpace = ShopSignUtil.getFreeSpace(shopBlockInventory, item);
           if (shopFreeSpace < amount) {
             updateSignTitle(sign, true);
-            System.out.println("NOT ENOUGH SPACE IN SHOP CONTAINER");
+            player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_SELL_NO_SPACE.getComponent(null)));
             return;
           }
-          if (EcoAPI.getBalance(playerID) < cost) {
-            System.out.println("YOU DO NOT HAVE ENOUGH MONEY");
+          if (EcoAPI.getBalance(ownerID) < cost) {
+            player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_SELL_OWNER_INSUFFICIENT_FUNDS.getComponent(null)));
             return;
           }
           if (ItemUtil.getItemAmount(player, item) < amount) {
-            System.out.println("NOT ENOUGH ITEMS TO SELL");
+            player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_SELL_PLAYER_INSUFFICIENT_ITEMS.getComponent(new String[]{CoreUtil.parseValue(amount)})), item));
             return;
           }
           EcoAPI.removeBalance(ownerID, cost);
@@ -195,21 +184,24 @@ public class ShopSignListener implements Listener {
           ShopSignUtil.addShopItems(shopBlock, item, amount);
           ItemUtil.removePlayerItems(player, item, amount, false);
           updateSignTitle(sign, (shopFreeSpace - amount) < amount);
-          System.out.println("You sold items and they were stored in shop");
+          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_SELL_SUCCESS.getComponent(new String[]{
+            CoreUtil.parseValue(amount),
+            Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})
+          })), item));
         }
         case BUY -> {
           final int shopStock = ShopSignUtil.getItemAmount(shopBlockInventory, item);
           if (shopStock < amount) {
             updateSignTitle(sign, true);
-            System.out.println("NOT ENOUGH STOCK");
+            player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_BUY_INSUFFICIENT_STOCK.getComponent(null)));
             return;
           }
           if (EcoAPI.getBalance(playerID) < cost) {
-            System.out.println("NOT ENOUGH MONEY");
+            player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_BUY_INSUFFICIENT_FUNDS.getComponent(null)));
             return;
           }
-          if ( ItemUtil.getFreeSpace(player, item) < amount) {
-            System.out.println("Player does not have enough space");
+          if (ItemUtil.getFreeSpace(player, item) < amount) {
+            player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_BUY_INSUFFICIENT_SPACE.getComponent(null)));
             return;
           }
           EcoAPI.removeBalance(playerID, cost);
@@ -218,47 +210,52 @@ public class ShopSignListener implements Listener {
           ShopSignUtil.removeShopItems(shopBlock, item, amount);
           ItemUtil.giveItem(player, item, amount);
           updateSignTitle(sign, (shopStock - amount) < amount);
-          System.out.println("You were given item and items were removed from shop container");
+          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BUY_SUCCESS.getComponent(new String[]{
+            CoreUtil.parseValue(amount),
+            Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})
+          })), item));
         }
       }
-    } else if (!shops.getData().getSupportedSignBlocks().contains(block.getType())) {
+    } else if (shops.getData().getSupportedSignBlocks().contains(block.getType())) {
       final TileState shopSign = getShopSign(block);
       if (shopSign == null) return;
       final UUID ownerID = getShopOwner(shopSign);
       if (ownerID == null) return;
       if (!ownerID.equals(playerID)) {
-        System.out.println("You do not own the shop!");
         e.setCancelled(true);
+        player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_NOT_OWNER_OPEN.getComponent(null)));
       }
     }
   }
 
   @EventHandler
   public void onShopBlockBreak(BlockBreakEvent e) {
+    final Player player = e.getPlayer();
     final Block block = e.getBlock();
-    final UUID playerID = e.getPlayer().getUniqueId();
+    final UUID playerID = player.getUniqueId();
     if (shops.getData().getSupportedSignBlocks().contains(e.getBlock().getType())) {
       final TileState shopSign = getShopSign(block);
-      if (shopSign == null) return;;
+      if (shopSign == null) return;
       final UUID ownerID = getShopOwner(shopSign);
       if (ownerID == null) return;
       if (!ownerID.equals(playerID)) {
-        System.out.println("NOT OWNER");
         e.setCancelled(true);
+        player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_NOT_OWNER_BREAK.getComponent(null)));
         return;
       }
       block.getWorld().playSound(block.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1, 1);
-      System.out.println("Shop removed");
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BREAK_SUCCESS.getComponent(null)));
     } else if (block.getState().getBlockData() instanceof WallSign) {
       final TileState shopSign = (TileState) block.getState();
       final UUID ownerID = getShopOwner(shopSign);
       if (ownerID == null) return;
       if (!ownerID.equals(playerID)) {
-        System.out.println("NOT OWNER");
         e.setCancelled(true);
+        player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_NOT_OWNER_BREAK.getComponent(null)));
+        return;
       }
       block.getWorld().playSound(block.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1, 1);
-      System.out.println("Shop removed");
+      player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BREAK_SUCCESS.getComponent(null)));
     }
   }
 
@@ -332,10 +329,11 @@ public class ShopSignListener implements Listener {
     return null;
   }
 
-  private void sendShopInfoMessage(Player player, Sign sign, Inventory shopBlockInventory, ItemStack item, ShopType shopType, int amount, double cost, double profit) {
+  private void sendShopInfoMessage(Player player, Sign sign, Inventory shopBlockInventory, ItemStack item, UUID ownerID, ShopType shopType, int amount, double cost, double profit) {
     final List<Component> shopInfoLines = new ArrayList<>();
     shopInfoLines.add(Lang.SHOP_SIGN_INFO_HEADER.getComponent(null));
     shopInfoLines.add(Component.text(" "));
+    shopInfoLines.add(Lang.SHOP_SIGN_INFO_OWNER.getComponent(new String[]{ColorAPI.getNameColor(ownerID, Bukkit.getOfflinePlayer(ownerID).getName())}));
     final String shopTypeColored = shopType.equals(ShopType.BUY) ? Lang.BUY.getString() : Lang.SELL.getString();
     shopInfoLines.add(Lang.SHOP_SIGN_INFO_TYPE.getComponent(new String[]{shopTypeColored}));
     shopInfoLines.add(VariableUtil.parseVariables(Lang.SHOP_SIGN_INFO_ITEM.getComponent(null), item));
