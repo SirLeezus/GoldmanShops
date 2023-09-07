@@ -110,9 +110,7 @@ public class ShopSignListener implements Listener {
     newLines.add(Lang.SHOP_SIGN_TITLE.getComponent(null));
     final String shopTypeOption = signShopType.equals(ShopType.BUY) ? Lang.BUY.getString() : Lang.SELL.getString();
     newLines.add(Lang.SHOP_SIGN_TYPE.getComponent(new String[]{shopTypeOption}));
-    newLines.add(VariableUtil.parseVariables(Lang.SHOP_SIGN_AMOUNT.getComponent(new String[]{
-      CoreUtil.parseValue(targetItemAmount),
-    }), targetItem));
+    newLines.add(VariableUtil.parseVariables(Lang.SHOP_SIGN_AMOUNT.getComponent(new String[]{CoreUtil.parseValue(targetItemAmount)}), targetItem));
     newLines.add(Lang.SHOP_SIGN_COST.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})}));
     for (int i = 0; i < newLines.size(); i++) e.line(i, newLines.get(i));
 
