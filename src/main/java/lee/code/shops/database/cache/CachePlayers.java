@@ -1,19 +1,23 @@
 package lee.code.shops.database.cache;
 
 import lee.code.shops.database.DatabaseManager;
+import lee.code.shops.database.cache.data.ShopSpawnData;
 import lee.code.shops.database.handlers.DatabaseHandler;
 import lee.code.shops.database.tables.PlayerTable;
 import lee.code.shops.utils.CoreUtil;
+import lombok.Getter;
 import org.bukkit.Location;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CachePlayers extends DatabaseHandler {
+  @Getter private final ShopSpawnData shopSpawnData;
   private final ConcurrentHashMap<UUID, PlayerTable> playersCache = new ConcurrentHashMap<>();
 
   public CachePlayers(DatabaseManager databaseManager) {
     super(databaseManager);
+    this.shopSpawnData = new ShopSpawnData(this);
   }
 
   public PlayerTable getPlayerTable(UUID uuid) {
@@ -32,19 +36,5 @@ public class CachePlayers extends DatabaseHandler {
     final PlayerTable playerTable = new PlayerTable(uuid);
     setPlayerTable(playerTable);
     createPlayerDatabase(playerTable);
-  }
-
-  public boolean hasShopSpawn(UUID uuid) {
-    return getPlayerTable(uuid).getShopSpawn() != null;
-  }
-
-  public Location getShopSpawn(UUID uuid) {
-    return CoreUtil.parseLocation(getPlayerTable(uuid).getShopSpawn());
-  }
-
-  public void setShopSpawn(UUID uuid, Location location) {
-    final PlayerTable playerTable = getPlayerTable(uuid);
-    playerTable.setShopSpawn(CoreUtil.serializeLocation(location));
-    updatePlayerDatabase(playerTable);
   }
 }

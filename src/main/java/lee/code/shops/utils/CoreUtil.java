@@ -5,10 +5,14 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CoreUtil {
   private final static DecimalFormat amountFormatter = new DecimalFormat("#,###.##");
@@ -49,5 +53,12 @@ public class CoreUtil {
     if (location == null) return null;
     final String[] split = location.split(",", 6);
     return new Location(Bukkit.getWorld(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2]), Double.parseDouble(split[3]), (float) Double.parseDouble(split[4]), (float) Double.parseDouble(split[5]));
+  }
+
+  public static List<String> getOnlinePlayers() {
+    return Bukkit.getOnlinePlayers().stream()
+      .filter(player -> !player.getGameMode().equals(GameMode.SPECTATOR))
+      .map(Player::getName)
+      .collect(Collectors.toList());
   }
 }

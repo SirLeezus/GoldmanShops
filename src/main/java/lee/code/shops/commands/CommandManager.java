@@ -2,7 +2,9 @@ package lee.code.shops.commands;
 
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import lee.code.shops.Shops;
+import lee.code.shops.commands.cmds.PlayerShopsCMD;
 import lee.code.shops.commands.cmds.SetSpawnCMD;
+import lee.code.shops.commands.cmds.SpawnCMD;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.ShopMainMenu;
 import lee.code.shops.menus.system.MenuManager;
@@ -33,6 +35,8 @@ public class CommandManager implements CommandExecutor {
 
   private void storeSubCommands() {
     storeSubCommand(new SetSpawnCMD(shops));
+    storeSubCommand(new PlayerShopsCMD(shops));
+    storeSubCommand(new SpawnCMD(shops));
   }
 
   private void storeSubCommand(SubCommand subCommand) {
@@ -72,7 +76,7 @@ public class CommandManager implements CommandExecutor {
     }
     if (sender instanceof Player player) {
       final MenuManager menuManager = shops.getMenuManager();
-      menuManager.openMenu(new ShopMainMenu(menuManager.getMenuPlayerData(player.getUniqueId()), menuManager, shops.getData()), player);
+      menuManager.openMenu(new ShopMainMenu(menuManager, shops.getData()), player);
     } else {
       performAsync(sender, getSubCommand("help"), args);
     }

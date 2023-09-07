@@ -2,6 +2,7 @@ package lee.code.shops.listeners;
 
 import lee.code.colors.ColorAPI;
 import lee.code.economy.EcoAPI;
+import lee.code.playerdata.PlayerDataAPI;
 import lee.code.shops.Shops;
 import lee.code.shops.enums.ShopType;
 import lee.code.shops.lang.Lang;
@@ -321,7 +322,7 @@ public class ShopSignListener implements Listener {
     final List<Component> shopInfoLines = new ArrayList<>();
     shopInfoLines.add(Lang.SHOP_SIGN_INFO_HEADER.getComponent(null));
     shopInfoLines.add(Component.text(" "));
-    shopInfoLines.add(Lang.SHOP_SIGN_INFO_OWNER.getComponent(new String[]{ColorAPI.getNameColor(ownerID, Bukkit.getOfflinePlayer(ownerID).getName())}));
+    shopInfoLines.add(Lang.SHOP_SIGN_INFO_OWNER.getComponent(new String[]{ColorAPI.getNameColor(ownerID, PlayerDataAPI.getName(ownerID))}));
     final String shopTypeColored = shopType.equals(ShopType.BUY) ? Lang.BUY.getString() : Lang.SELL.getString();
     shopInfoLines.add(Lang.SHOP_SIGN_INFO_TYPE.getComponent(new String[]{shopTypeColored}));
     shopInfoLines.add(VariableUtil.parseVariables(Lang.SHOP_SIGN_INFO_ITEM.getComponent(null), item));

@@ -9,11 +9,11 @@ import lee.code.shops.menus.menu.menudata.shop.category.ToolItem;
 import lee.code.shops.menus.system.MenuButton;
 import lee.code.shops.menus.system.MenuManager;
 import lee.code.shops.menus.system.MenuPaginatedGUI;
-import lee.code.shops.menus.system.MenuPlayerData;
 import lee.code.shops.utils.CoreUtil;
 import lee.code.shops.utils.ItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -25,8 +25,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
   private final Data data;
   private final Rout rout;
 
-  public ShopCategoryMenu(MenuPlayerData menuPlayerData, MenuManager menuManager, Data data, Rout rout) {
-    super(menuPlayerData);
+  public ShopCategoryMenu(MenuManager menuManager, Data data, Rout rout) {
     this.menuManager = menuManager;
     this.rout = rout;
     this.data =  data;
@@ -43,7 +42,6 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     addBorderGlass();
     final List<ItemStack> items = getCategoryItems(rout, true);
     int slot = 0;
-    page = menuPlayerData.getPage();
     for (int i = 0; i < maxItemsPerPage; i++) {
       index = maxItemsPerPage * page + i;
       if (index >= items.size()) break;
@@ -67,7 +65,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     return new MenuButton()
       .creator(p-> displayItem)
       .consumer(e -> {
-        menuManager.openMenu(new ShopItemMenu(menuManager, menuPlayerData, data, itemStack, rout), player);
+        menuManager.openMenu(new ShopItemMenu(menuManager, data, itemStack, rout), player);
       });
   }
 
@@ -83,8 +81,8 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     }
     if (sort) {
       items.sort((item1, item2) -> {
-        String name1 = item1.getType().name();
-        String name2 = item2.getType().name();
+        final String name1 = item1.getType().name();
+        final String name2 = item2.getType().name();
         return name1.compareTo(name2);
       });
     }
@@ -95,7 +93,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     addButton(51, new MenuButton().creator(p -> MenuItem.NEXT_PAGE.createItem())
       .consumer(e -> {
         if (!((index + 1) >= getCategoryItems(rout, false).size())) {
-          menuPlayerData.setPage(page + 1);
+          page += 1;
           clearInventory();
           clearButtons();
           decorate(player);
@@ -106,7 +104,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
         if (page == 0) {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_PREVIOUS_PAGE.getComponent(null)));
         } else {
-          menuPlayerData.setPage(page - 1);
+          page -= 1;
           clearInventory();
           clearButtons();
           decorate(player);
@@ -115,8 +113,8 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     addButton(49, new MenuButton()
       .creator(p -> MenuItem.BACK_MENU.createItem())
       .consumer(e -> {
-        menuPlayerData.setPage(0);
-        menuManager.openMenu(new ShopMainMenu(menuPlayerData, menuManager, data), player);
+        page = 0;
+        menuManager.openMenu(new ShopMainMenu(menuManager, data), player);
       }));
   }
 }

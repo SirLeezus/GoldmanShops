@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
 @AllArgsConstructor
 public enum Lang {
   PREFIX("&#FF9719&lShops &e➔ "),
+  USAGE("&6&lUsage: &e{0}"),
   VALUE_FORMAT("&6${0}"),
   SELL("&c&lSell"),
   BUY("&2&lBuy"),
@@ -32,6 +33,10 @@ public enum Lang {
   SHOP_SIGN_AMOUNT("&3x{0} {display-name-item}"),
   SHOP_SIGN_COST("{0}"),
   MENU_TITLE_SHOP("&#FF9719&lShop"),
+  MENU_SHOP_PLAYER_TELEPORT_SUCCESSFUL("&aYou successfully teleported to &6{0}'s &ashop!"),
+  MENU_SHOP_PLAYER_TELEPORT_FAILED("&cFailed to teleport to &6{0}'s &cshop."),
+  MENU_TITLE_SHOP_PLAYER("&#FF9719&lPlayer Shops"),
+  MENU_SHOP_PLAYER_HEAD_NAME("{0}'s Shop"),
   MENU_TITLE_SHOP_SIGN_PREVIEW("&2&lShop Item Preview"),
   MENU_SHOP_CATEGORY_ITEM_LORE("&7» Click to open category menu!"),
   MENU_SHOP_ITEM_LORE("&a&lBuy&7: {0}\n&c&lSell&7: {1}"),
@@ -66,6 +71,8 @@ public enum Lang {
   ERROR_SHOP_SIGN_CREATE_INVALID_TYPE("&cThe input &3{0} &cis a invalid shop type."),
   ERROR_SHOP_SIGN_CREATE_INVALID_FORMAT("&cInvalid shop sign, to learn how to create one correctly run the command &e/shop signhelp&c."),
   ERROR_NOT_CONSOLE_COMMAND("&cThis command does not work in console."),
+  ERROR_NO_PLAYER_DATA("&cCould not find any player data for &6{0}&c."),
+  ERROR_COMMAND_SPAWN_NO_SPAWN("&cThe player &6{0} &cdoes nto have a shop spawn set."),
 
   ;
   @Getter private final String string;

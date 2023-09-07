@@ -1,5 +1,7 @@
 shop {
-  players;
-  spawn;
+  playershops;
+  spawn {
+    player brigadier:string single_word;
+  }
   setspawn;
 }

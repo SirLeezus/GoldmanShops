@@ -3,42 +3,43 @@ package lee.code.shops.commands.cmds;
 import lee.code.shops.Shops;
 import lee.code.shops.commands.SubCommand;
 import lee.code.shops.lang.Lang;
+import lee.code.shops.menus.menu.ShopPlayerMenu;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetSpawnCMD extends SubCommand {
+public class PlayerShopsCMD extends SubCommand {
   private final Shops shops;
 
-  public SetSpawnCMD(Shops shops) {
+  public PlayerShopsCMD(Shops shops) {
     this.shops = shops;
   }
 
   @Override
   public String getName() {
-    return "setspawn";
+    return "playershops";
   }
 
   @Override
   public String getDescription() {
-    return "Set your shop spawn.";
+    return "Menu list of player shops.";
   }
 
   @Override
   public String getSyntax() {
-    return "/shop setspawn";
+    return "/shop playershops";
   }
 
   @Override
   public String getPermission() {
-    return "shops.command.setspawn";
+    return "shops.command.playershops";
   }
 
   @Override
   public boolean performAsync() {
-    return true;
+    return false;
   }
 
   @Override
@@ -48,8 +49,7 @@ public class SetSpawnCMD extends SubCommand {
 
   @Override
   public void perform(Player player, String[] args) {
-    shops.getCacheManager().getCachePlayers().getShopSpawnData().setSpawn(player.getUniqueId(), player.getLocation());
-    player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.COMMAND_SET_SPAWN_SUCCESS.getComponent(null)));
+    shops.getMenuManager().openMenu(new ShopPlayerMenu(shops.getCacheManager().getCachePlayers().getShopSpawnData()), player);
   }
 
   @Override

@@ -6,19 +6,16 @@ import lee.code.shops.menus.menu.menudata.shop.ShopMainMenuItem;
 import lee.code.shops.menus.system.MenuButton;
 import lee.code.shops.menus.system.MenuGUI;
 import lee.code.shops.menus.system.MenuManager;
-import lee.code.shops.menus.system.MenuPlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 public class ShopMainMenu extends MenuGUI {
   private final MenuManager menuManager;
-  private final MenuPlayerData menuPlayerData;
   private final Data data;
 
-  public ShopMainMenu(MenuPlayerData menuPlayerData, MenuManager menuManager, Data data) {
+  public ShopMainMenu(MenuManager menuManager, Data data) {
     this.menuManager = menuManager;
-    this.menuPlayerData = menuPlayerData;
     this.data = data;
     setInventory();
   }
@@ -41,7 +38,7 @@ public class ShopMainMenu extends MenuGUI {
     return new MenuButton()
       .creator(p-> shopMainMenuItem.createItem())
       .consumer(e -> {
-        menuManager.openMenu(new ShopCategoryMenu(menuPlayerData, menuManager, data, shopMainMenuItem.getRout()), player);
+        menuManager.openMenu(new ShopCategoryMenu(menuManager, data, shopMainMenuItem.getRout()), player);
       });
   }
 }

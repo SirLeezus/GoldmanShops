@@ -18,15 +18,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 public class ShopItemMenu extends MenuGUI {
-  private final MenuPlayerData menuPlayerData;
   private final MenuManager menuManager;
   private final Data data;
   private final ItemStack item;
   private final Rout rout;
 
-  public ShopItemMenu(MenuManager menuManager, MenuPlayerData menuPlayerData, Data data, ItemStack item, Rout rout) {
+  public ShopItemMenu(MenuManager menuManager, Data data, ItemStack item, Rout rout) {
     this.menuManager = menuManager;
-    this.menuPlayerData = menuPlayerData;
     this.data = data;
     this.item = item;
     this.rout = rout;
@@ -96,7 +94,7 @@ public class ShopItemMenu extends MenuGUI {
     addButton(49, new MenuButton()
       .creator(p -> MenuItem.BACK_MENU.createItem())
       .consumer(e -> {
-        menuManager.openMenu(new ShopCategoryMenu(menuPlayerData, menuManager, data, rout), player);
+        menuManager.openMenu(new ShopCategoryMenu(menuManager, data, rout), player);
       }));
   }
 

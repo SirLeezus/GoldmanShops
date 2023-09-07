@@ -13,7 +13,6 @@ import java.util.UUID;
 
 public class MenuManager {
   private final Map<Inventory, InventoryHandler> activeInventories = new HashMap<>();
-  private final Map<UUID, MenuPlayerData> playerMenuData = new HashMap<>();
 
   public void openMenu(MenuGUI gui, Player player) {
     registerHandledInventory(gui.getInventory(), gui);
@@ -23,11 +22,6 @@ public class MenuManager {
   public void openMenu(MenuPaginatedGUI gui, Player player) {
     registerHandledInventory(gui.getInventory(), gui);
     player.openInventory(gui.getInventory());
-  }
-
-  public MenuPlayerData getMenuPlayerData(UUID uuid) {
-    if (!playerMenuData.containsKey(uuid)) playerMenuData.put(uuid, new MenuPlayerData(uuid));
-    return playerMenuData.get(uuid);
   }
 
   public void registerHandledInventory(Inventory inventory, InventoryHandler handler) {
@@ -55,9 +49,5 @@ public class MenuManager {
       handler.onClose(event);
       unregisterInventory(inventory);
     }
-  }
-
-  public void handleQuit(PlayerQuitEvent event) {
-    playerMenuData.remove(event.getPlayer().getUniqueId());
   }
 }

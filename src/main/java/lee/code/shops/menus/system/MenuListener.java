@@ -28,9 +28,4 @@ public class MenuListener implements Listener {
   public void onClose(InventoryCloseEvent event) {
     menuManager.handleClose(event);
   }
-
-  @EventHandler
-  public void onQuit(PlayerQuitEvent event) {
-    menuManager.handleQuit(event);
-  }
 }
