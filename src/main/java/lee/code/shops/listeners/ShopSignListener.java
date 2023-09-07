@@ -5,6 +5,7 @@ import lee.code.economy.EcoAPI;
 import lee.code.shops.Shops;
 import lee.code.shops.enums.ShopType;
 import lee.code.shops.lang.Lang;
+import lee.code.shops.menus.menu.ShopSignItemPreviewMenu;
 import lee.code.shops.utils.CoreUtil;
 import lee.code.shops.utils.ItemUtil;
 import lee.code.shops.utils.ShopSignUtil;
@@ -152,6 +153,12 @@ public class ShopSignListener implements Listener {
       final double cost = getShopCost(sign);
       final int amount = getShopAmount(sign);
       final double profit = getShopProfit(sign);
+      if (player.isSneaking()) {
+        final ItemStack previewItem = new ItemStack(item);
+        previewItem.setAmount(amount);
+        shops.getMenuManager().openMenu(new ShopSignItemPreviewMenu(previewItem), player);
+        return;
+      }
       final Block shopBlock = block.getRelative(directional.getFacing().getOppositeFace());
       final Inventory shopBlockInventory = getContainerInventory(shopBlock);
       if (ownerID.equals(playerID)) {

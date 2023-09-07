@@ -31,6 +31,7 @@ public enum Lang {
   SHOP_SIGN_AMOUNT("&3x{0} {display-name-item}"),
   SHOP_SIGN_COST("{0}"),
   MENU_TITLE_SHOP("&#FF9719&lShop"),
+  MENU_TITLE_SHOP_SIGN_PREVIEW("&2&lShop Item Preview"),
   MENU_SHOP_CATEGORY_ITEM_LORE("&7» Click to open category menu!"),
   MENU_SHOP_ITEM_LORE("&a&lBuy&7: {0}\n&c&lSell&7: {1}"),
   MENU_SHOP_INTERFACE_ITEM_BUY_LORE("&eAmount&7: &2{0}\n&eCost&7: {1}"),
