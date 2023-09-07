@@ -43,6 +43,6 @@ public class ShopSpawnData {
   }
 
   public ConcurrentHashMap<UUID, String> getAllShopSpawns() {
-    return shopSpawnCache;
+    return new ConcurrentHashMap<>(shopSpawnCache);
   }
 }

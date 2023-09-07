@@ -13,6 +13,7 @@ public enum Lang {
   SELL("&c&lSell"),
   BUY("&2&lBuy"),
   COMMAND_SET_SPAWN_SUCCESS("&aYou successfully set your shop spawn!"),
+  COMMAND_REMOVE_SPAWN_SUCCESS("&aYou successfully removed your shop spawn!"),
   SHOP_SIGN_BREAK_SUCCESS("&7You broke a shop sign."),
   SHOP_SIGN_SELL_SUCCESS("&aYou successfully sold &3x{0} {display-name-item} &afor {1}&a!"),
   SHOP_SIGN_BUY_SUCCESS("&aYou successfully bought &3x{0} {display-name-item} &afor {1}&a!"),
@@ -73,6 +74,7 @@ public enum Lang {
   ERROR_NOT_CONSOLE_COMMAND("&cThis command does not work in console."),
   ERROR_NO_PLAYER_DATA("&cCould not find any player data for &6{0}&c."),
   ERROR_COMMAND_SPAWN_NO_SPAWN("&cThe player &6{0} &cdoes nto have a shop spawn set."),
+  ERROR_COMMAND_REMOVE_SPAWN_NO_SPAWN("&cYou don't have a player shop spawn set."),
 
   ;
   @Getter private final String string;

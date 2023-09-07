@@ -3,6 +3,7 @@ package lee.code.shops.commands;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import lee.code.shops.Shops;
 import lee.code.shops.commands.cmds.PlayerShopsCMD;
+import lee.code.shops.commands.cmds.RemoveSpawnCMD;
 import lee.code.shops.commands.cmds.SetSpawnCMD;
 import lee.code.shops.commands.cmds.SpawnCMD;
 import lee.code.shops.lang.Lang;
@@ -34,9 +35,10 @@ public class CommandManager implements CommandExecutor {
   }
 
   private void storeSubCommands() {
-    storeSubCommand(new SetSpawnCMD(shops));
     storeSubCommand(new PlayerShopsCMD(shops));
     storeSubCommand(new SpawnCMD(shops));
+    storeSubCommand(new RemoveSpawnCMD(shops));
+    storeSubCommand(new SetSpawnCMD(shops));
   }
 
   private void storeSubCommand(SubCommand subCommand) {

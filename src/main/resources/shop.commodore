@@ -4,4 +4,5 @@ shop {
     player brigadier:string single_word;
   }
   setspawn;
+  removespawn;
 }
