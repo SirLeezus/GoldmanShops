@@ -3,6 +3,9 @@ package lee.code.shops;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import lee.code.shops.commands.CommandManager;
 import lee.code.shops.commands.TabCompletion;
+import lee.code.shops.database.CacheManager;
+import lee.code.shops.database.DatabaseManager;
+import lee.code.shops.listeners.JoinListener;
 import lee.code.shops.listeners.ShopSignListener;
 import lee.code.shops.menus.system.MenuListener;
 import lee.code.shops.menus.system.MenuManager;
@@ -14,28 +17,34 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 
 public class Shops extends JavaPlugin {
-
   @Getter private CommandManager commandManager;
   @Getter private MenuManager menuManager;
   @Getter private Data data;
+  @Getter private CacheManager cacheManager;
+  private DatabaseManager databaseManager;
 
   @Override
   public void onEnable() {
+    this.databaseManager = new DatabaseManager(this);
+    this.cacheManager = new CacheManager(this, databaseManager);
     this.commandManager = new CommandManager(this);
     this.menuManager = new MenuManager();
     this.data = new Data();
+
+    databaseManager.initialize(false);
     registerCommands();
     registerListeners();
   }
 
   @Override
   public void onDisable() {
-
+    databaseManager.closeConnection();
   }
 
   private void registerListeners() {
     getServer().getPluginManager().registerEvents(new MenuListener(menuManager), this);
     getServer().getPluginManager().registerEvents(new ShopSignListener(this), this);
+    getServer().getPluginManager().registerEvents(new JoinListener(this), this);
   }
 
   private void registerCommands() {

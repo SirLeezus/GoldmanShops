@@ -9,6 +9,9 @@ import net.kyori.adventure.text.Component;
 public enum Lang {
   PREFIX("&#FF9719&lShops &e➔ "),
   VALUE_FORMAT("&6${0}"),
+  SELL("&c&lSell"),
+  BUY("&2&lBuy"),
+  COMMAND_SET_SPAWN_SUCCESS("&aYou successfully set your shop spawn!"),
   SHOP_SIGN_BREAK_SUCCESS("&7You broke a shop sign."),
   SHOP_SIGN_SELL_SUCCESS("&aYou successfully sold &3x{0} {display-name-item} &afor {1}&a!"),
   SHOP_SIGN_BUY_SUCCESS("&aYou successfully bought &3x{0} {display-name-item} &afor {1}&a!"),
@@ -25,8 +28,6 @@ public enum Lang {
   SHOP_SIGN_INFO_FOOTER("&a------------------------"),
   SHOP_SIGN_TITLE("&2[&a&lShop&2]"),
   SHOP_SIGN_TITLE_OUT_OF_STOCK_OR_FULL("&7[&7&lShop&7]"),
-  SELL("&c&lSell"),
-  BUY("&2&lBuy"),
   SHOP_SIGN_TYPE("{0}"),
   SHOP_SIGN_AMOUNT("&3x{0} {display-name-item}"),
   SHOP_SIGN_COST("{0}"),
@@ -64,7 +65,7 @@ public enum Lang {
   ERROR_SHOP_SIGN_CREATE_INVALID_VALUE("&cThe input &3{0} &cis a invalid value."),
   ERROR_SHOP_SIGN_CREATE_INVALID_TYPE("&cThe input &3{0} &cis a invalid shop type."),
   ERROR_SHOP_SIGN_CREATE_INVALID_FORMAT("&cInvalid shop sign, to learn how to create one correctly run the command &e/shop signhelp&c."),
-
+  ERROR_NOT_CONSOLE_COMMAND("&cThis command does not work in console."),
 
   ;
   @Getter private final String string;

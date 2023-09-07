@@ -8,4 +8,4 @@ depend: [GoldmanEconomy, GoldmanColors]
 commands:
   shop:
     description: Opens server shop menu.
-    permission: towns.command.shop
+    permission: shops.command.shop

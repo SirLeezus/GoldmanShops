@@ -2,6 +2,7 @@ package lee.code.shops.commands;
 
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import lee.code.shops.Shops;
+import lee.code.shops.commands.cmds.SetSpawnCMD;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.ShopMainMenu;
 import lee.code.shops.menus.system.MenuManager;
@@ -31,7 +32,7 @@ public class CommandManager implements CommandExecutor {
   }
 
   private void storeSubCommands() {
-
+    storeSubCommand(new SetSpawnCMD(shops));
   }
 
   private void storeSubCommand(SubCommand subCommand) {
