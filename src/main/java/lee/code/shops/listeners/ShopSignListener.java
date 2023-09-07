@@ -180,6 +180,7 @@ public class ShopSignListener implements Listener {
           ItemUtil.removePlayerItems(player, item, amount, false);
           setShopProfit(sign, profit + cost);
           updateSignTitle(sign, (shopFreeSpace - amount) < amount);
+          runPurchaseEffectAndSound(block);
           player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_SELL_SUCCESS.getComponent(new String[]{CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})})), item));
         }
         case BUY -> {
@@ -203,6 +204,7 @@ public class ShopSignListener implements Listener {
           ItemUtil.giveItem(player, item, amount);
           setShopProfit(sign, profit + cost);
           updateSignTitle(sign, (shopStock - amount) < amount);
+          runPurchaseEffectAndSound(block);
           player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BUY_SUCCESS.getComponent(new String[]{CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})})), item));
         }
       }
@@ -336,6 +338,15 @@ public class ShopSignListener implements Listener {
       sign.getSide(Side.FRONT).line(0, Lang.SHOP_SIGN_TITLE.getComponent(null));
       sign.update(true, false);
     }
+  }
+
+  private void runPurchaseEffectAndSound(Block block) {
+    block.getWorld().spawnParticle(Particle.ITEM_CRACK,
+      block.getBoundingBox().getCenter().getX(),
+      block.getBoundingBox().getCenter().getY(),
+      block.getBoundingBox().getCenter().getZ(),
+      10, 0.2, 0.2, 0, 0.09, new ItemStack(Material.EMERALD));
+    block.getWorld().playSound(block.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, (float) 1, (float) 1);
   }
 
   private Inventory getContainerInventory(Block container) {
