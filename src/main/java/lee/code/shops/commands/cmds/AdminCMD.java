@@ -30,12 +30,12 @@ public class AdminCMD extends SubCommand {
 
   @Override
   public String getDescription() {
-    return "Admin commands for player shops.";
+    return "Admin commands for shops.";
   }
 
   @Override
   public String getSyntax() {
-    return "/shop admin <removespawn/bypass>";
+    return "/shop admin &f<removespawn/bypass>";
   }
 
   @Override
