@@ -67,7 +67,7 @@ public class ShopSignListener implements Listener {
       player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_INVALID_VALUE.getComponent(new String[]{valueString})));
       return;
     }
-    final double value = Double.parseDouble(valueString);
+    final double cost = Double.parseDouble(valueString);
     final Block block = e.getBlock();
     if (!(block.getBlockData() instanceof Directional directional)) {
       player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_DIRECTION.getComponent(null)));
@@ -113,7 +113,7 @@ public class ShopSignListener implements Listener {
     newLines.add(VariableUtil.parseVariables(Lang.SHOP_SIGN_AMOUNT.getComponent(new String[]{
       CoreUtil.parseValue(targetItemAmount),
     }), targetItem));
-    newLines.add(Lang.SHOP_SIGN_COST.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(targetItemAmount)})}));
+    newLines.add(Lang.SHOP_SIGN_COST.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})}));
     for (int i = 0; i < newLines.size(); i++) e.line(i, newLines.get(i));
 
     final TileState state = (TileState) block.getState();
@@ -122,16 +122,16 @@ public class ShopSignListener implements Listener {
     final NamespacedKey shopItem = new NamespacedKey(shops, "shop-item");
     final NamespacedKey shopAmount = new NamespacedKey(shops, "shop-amount");
     final NamespacedKey shopType = new NamespacedKey(shops, "shop-type");
-    final NamespacedKey shopPrice = new NamespacedKey(shops, "shop-price");
+    final NamespacedKey shopCost = new NamespacedKey(shops, "shop-cost");
     final NamespacedKey shopProfit = new NamespacedKey(shops, "shop-profit");
 
     signContainer.set(shopOwner, PersistentDataType.STRING, playerID.toString());
     signContainer.set(shopItem, PersistentDataType.STRING, itemString);
     signContainer.set(shopAmount, PersistentDataType.INTEGER, targetItemAmount);
     signContainer.set(shopType, PersistentDataType.STRING, signShopType.name());
-    signContainer.set(shopPrice, PersistentDataType.DOUBLE, value);
+    signContainer.set(shopCost, PersistentDataType.DOUBLE, cost);
     signContainer.set(shopProfit, PersistentDataType.DOUBLE, 0.0);
-    state.update();
+    state.update(true, false);
     player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_CREATE_SUCCESS.getComponent(null)));
   }
 
@@ -145,17 +145,16 @@ public class ShopSignListener implements Listener {
     if (block.getState().getBlockData() instanceof WallSign) {
       final Directional directional = (Directional) block.getState().getBlockData();
       final Sign sign = (Sign) block.getState();
-      final TileState shopSignTile = (TileState) block.getState();
-      final UUID ownerID = getShopOwner(shopSignTile);
+      final UUID ownerID = getShopOwner(sign);
       if (ownerID == null) return;
       e.setCancelled(true);
-      final ItemStack item = getShopItem(shopSignTile);
+      final ItemStack item = getShopItem(sign);
+      final ShopType shopType = getShopType(sign);
       if (item == null) return;
-      final ShopType shopType = getShopType(shopSignTile);
       if (shopType == null) return;
-      final double cost = getShopValue(shopSignTile);
-      final int amount = getShopAmount(shopSignTile);
-      final double profit = getShopProfit(shopSignTile);
+      final double cost = getShopCost(sign);
+      final int amount = getShopAmount(sign);
+      final double profit = getShopProfit(sign);
       final Block shopBlock = block.getRelative(directional.getFacing().getOppositeFace());
       final Inventory shopBlockInventory = getContainerInventory(shopBlock);
       if (ownerID.equals(playerID)) {
@@ -180,20 +179,17 @@ public class ShopSignListener implements Listener {
           }
           EcoAPI.removeBalance(ownerID, cost);
           EcoAPI.addBalance(playerID, cost);
-          setShopProfit(shopSignTile, profit + cost);
           ShopSignUtil.addShopItems(shopBlock, item, amount);
           ItemUtil.removePlayerItems(player, item, amount, false);
+          setShopProfit(sign, profit + cost);
           updateSignTitle(sign, (shopFreeSpace - amount) < amount);
-          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_SELL_SUCCESS.getComponent(new String[]{
-            CoreUtil.parseValue(amount),
-            Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})
-          })), item));
+          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_SELL_SUCCESS.getComponent(new String[]{CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})})), item));
         }
         case BUY -> {
           final int shopStock = ShopSignUtil.getItemAmount(shopBlockInventory, item);
           if (shopStock < amount) {
             updateSignTitle(sign, true);
-            player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_BUY_INSUFFICIENT_STOCK.getComponent(null)));
+            player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_BUY_INSUFFICIENT_STOCK.getComponent(new String[]{CoreUtil.parseValue(amount)})), item));
             return;
           }
           if (EcoAPI.getBalance(playerID) < cost) {
@@ -206,20 +202,17 @@ public class ShopSignListener implements Listener {
           }
           EcoAPI.removeBalance(playerID, cost);
           EcoAPI.addBalance(ownerID, cost);
-          setShopProfit(shopSignTile, profit + cost);
           ShopSignUtil.removeShopItems(shopBlock, item, amount);
           ItemUtil.giveItem(player, item, amount);
+          setShopProfit(sign, profit + cost);
           updateSignTitle(sign, (shopStock - amount) < amount);
-          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BUY_SUCCESS.getComponent(new String[]{
-            CoreUtil.parseValue(amount),
-            Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})
-          })), item));
+          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BUY_SUCCESS.getComponent(new String[]{CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})})), item));
         }
       }
     } else if (shops.getData().getSupportedSignBlocks().contains(block.getType())) {
-      final TileState shopSign = getShopSign(block);
-      if (shopSign == null) return;
-      final UUID ownerID = getShopOwner(shopSign);
+      final Sign sign = getShopSign(block);
+      if (sign == null) return;
+      final UUID ownerID = getShopOwner(sign);
       if (ownerID == null) return;
       if (!ownerID.equals(playerID)) {
         e.setCancelled(true);
@@ -234,9 +227,9 @@ public class ShopSignListener implements Listener {
     final Block block = e.getBlock();
     final UUID playerID = player.getUniqueId();
     if (shops.getData().getSupportedSignBlocks().contains(e.getBlock().getType())) {
-      final TileState shopSign = getShopSign(block);
-      if (shopSign == null) return;
-      final UUID ownerID = getShopOwner(shopSign);
+      final Sign sign = getShopSign(block);
+      if (sign == null) return;
+      final UUID ownerID = getShopOwner(sign);
       if (ownerID == null) return;
       if (!ownerID.equals(playerID)) {
         e.setCancelled(true);
@@ -246,8 +239,8 @@ public class ShopSignListener implements Listener {
       block.getWorld().playSound(block.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1, 1);
       player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BREAK_SUCCESS.getComponent(null)));
     } else if (block.getState().getBlockData() instanceof WallSign) {
-      final TileState shopSign = (TileState) block.getState();
-      final UUID ownerID = getShopOwner(shopSign);
+      final Sign sign = (Sign) block.getState();
+      final UUID ownerID = getShopOwner(sign);
       if (ownerID == null) return;
       if (!ownerID.equals(playerID)) {
         e.setCancelled(true);
@@ -266,8 +259,8 @@ public class ShopSignListener implements Listener {
         final TileState shopSign = getShopSign(block);
         if (shopSign != null) e.blockList().remove(block);
       } else if (block.getState().getBlockData() instanceof WallSign) {
-        final TileState state = (TileState) block.getState();
-        final UUID ownerID = getShopOwner(state);
+        final Sign sign = (Sign) block.getState();
+        final UUID ownerID = getShopOwner(sign);
         if (ownerID != null) e.blockList().remove(block);
       }
     }
@@ -282,7 +275,7 @@ public class ShopSignListener implements Listener {
     if (shopSign != null) e.setCancelled(true);
   }
 
-  private TileState getShopSign(Block block) {
+  private Sign getShopSign(Block block) {
     final BlockState blockState = block.getState();
     final BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
     for (BlockFace face : faces) {
@@ -305,10 +298,9 @@ public class ShopSignListener implements Listener {
                 final Directional signDirectional = (Directional) sign.getBlockData();
                 final Block relativeBlockBehind = relative.getRelative(signDirectional.getFacing().getOppositeFace());
                 if (relativeBlockBehind.equals(relativeBlock)) {
-                  final TileState state = (TileState) relativeState;
-                  final PersistentDataContainer container = state.getPersistentDataContainer();
+                  final PersistentDataContainer container = sign.getPersistentDataContainer();
                   final NamespacedKey owner = new NamespacedKey(shops, "shop-owner");
-                  if (container.has(owner, PersistentDataType.STRING)) return state;
+                  if (container.has(owner, PersistentDataType.STRING)) return sign;
                 }
               }
             }
@@ -319,10 +311,9 @@ public class ShopSignListener implements Listener {
         final Directional signDirectional = (Directional) sign.getBlockData();
         final Block relativeBlockBehind = relativeBlock.getRelative(signDirectional.getFacing().getOppositeFace());
         if (relativeBlockBehind.equals(block)) {
-          final TileState state = (TileState) relativeBlockState;
-          final PersistentDataContainer container = state.getPersistentDataContainer();
+          final PersistentDataContainer container = sign.getPersistentDataContainer();
           final NamespacedKey owner = new NamespacedKey(shops, "shop-owner");
-          if (container.has(owner, PersistentDataType.STRING)) return state;
+          if (container.has(owner, PersistentDataType.STRING)) return sign;
         }
       }
     }
@@ -339,7 +330,7 @@ public class ShopSignListener implements Listener {
     shopInfoLines.add(VariableUtil.parseVariables(Lang.SHOP_SIGN_INFO_ITEM.getComponent(null), item));
     shopInfoLines.add(Lang.SHOP_SIGN_INFO_AMOUNT.getComponent(new String[]{CoreUtil.parseValue(amount)}));
     shopInfoLines.add(Lang.SHOP_SIGN_INFO_STOCK.getComponent(new String[]{CoreUtil.parseValue(ShopSignUtil.getItemAmount(shopBlockInventory, item))}));
-    shopInfoLines.add(Lang.SHOP_SIGN_INFO_PRICE.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})}));
+    shopInfoLines.add(Lang.SHOP_SIGN_INFO_COST.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})}));
     if (shopType.equals(ShopType.BUY)) shopInfoLines.add(Lang.SHOP_SIGN_INFO_SOLD.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(profit)})}));
     else shopInfoLines.add(Lang.SHOP_SIGN_INFO_BOUGHT.getComponent(new String[]{Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(profit)})}));
     shopInfoLines.add(Component.text(" "));
@@ -352,10 +343,10 @@ public class ShopSignListener implements Listener {
   private void updateSignTitle(Sign sign, boolean isFullOrOutOfStock) {
     if (isFullOrOutOfStock) {
       sign.getSide(Side.FRONT).line(0, Lang.SHOP_SIGN_TITLE_OUT_OF_STOCK_OR_FULL.getComponent(null));
-      sign.update();
+      sign.update(true, false);
     } else {
       sign.getSide(Side.FRONT).line(0, Lang.SHOP_SIGN_TITLE.getComponent(null));
-      sign.update();
+      sign.update(true, false);
     }
   }
 
@@ -366,49 +357,49 @@ public class ShopSignListener implements Listener {
     return chest.getInventory();
   }
 
-  private UUID getShopOwner(TileState tileState) {
-    final PersistentDataContainer container = tileState.getPersistentDataContainer();
+  private UUID getShopOwner(Sign sign) {
+    final PersistentDataContainer container = sign.getPersistentDataContainer();
     final NamespacedKey key = new NamespacedKey(shops, "shop-owner");
     final String owner = container.get(key, PersistentDataType.STRING);
     if (owner != null) return UUID.fromString(owner);
     else return null;
   }
 
-  private double getShopValue(TileState tileState) {
-    final PersistentDataContainer container = tileState.getPersistentDataContainer();
-    final NamespacedKey key = new NamespacedKey(shops, "shop-price");
+  private double getShopCost(Sign sign) {
+    final PersistentDataContainer container = sign.getPersistentDataContainer();
+    final NamespacedKey key = new NamespacedKey(shops, "shop-cost");
     return container.getOrDefault(key, PersistentDataType.DOUBLE, 0.0);
   }
 
-  private double getShopProfit(TileState tileState) {
-    final PersistentDataContainer container = tileState.getPersistentDataContainer();
+  private double getShopProfit(Sign sign) {
+    final PersistentDataContainer container = sign.getPersistentDataContainer();
     final NamespacedKey key = new NamespacedKey(shops, "shop-profit");
     return container.getOrDefault(key, PersistentDataType.DOUBLE, 0.0);
   }
 
-  private void setShopProfit(TileState tileState, double profit) {
-    final PersistentDataContainer container = tileState.getPersistentDataContainer();
+  private void setShopProfit(Sign sign, double profit) {
+    final PersistentDataContainer container = sign.getPersistentDataContainer();
     final NamespacedKey key = new NamespacedKey(shops, "shop-profit");
     container.set(key, PersistentDataType.DOUBLE, profit);
-    tileState.update();
+    sign.update(true, false);
   }
 
-  private int getShopAmount(TileState tileState) {
-    final PersistentDataContainer container = tileState.getPersistentDataContainer();
+  private int getShopAmount(Sign sign) {
+    final PersistentDataContainer container = sign.getPersistentDataContainer();
     final NamespacedKey key = new NamespacedKey(shops, "shop-amount");
     return container.getOrDefault(key, PersistentDataType.INTEGER, 0);
   }
 
-  private ShopType getShopType(TileState tileState) {
-    final PersistentDataContainer container = tileState.getPersistentDataContainer();
+  private ShopType getShopType(Sign sign) {
+    final PersistentDataContainer container = sign.getPersistentDataContainer();
     final NamespacedKey key = new NamespacedKey(shops, "shop-type");
     final String type = container.get(key, PersistentDataType.STRING);
     if (type != null) return ShopType.valueOf(type);
     else return null;
   }
 
-  private ItemStack getShopItem(TileState tileState) {
-    final PersistentDataContainer container = tileState.getPersistentDataContainer();
+  private ItemStack getShopItem(Sign sign) {
+    final PersistentDataContainer container = sign.getPersistentDataContainer();
     final NamespacedKey key = new NamespacedKey(shops, "shop-item");
     final String item = container.get(key, PersistentDataType.STRING);
     if (item != null) return ItemUtil.parseItemStack(item);
