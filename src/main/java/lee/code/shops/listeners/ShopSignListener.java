@@ -4,6 +4,7 @@ import lee.code.colors.ColorAPI;
 import lee.code.economy.EcoAPI;
 import lee.code.playerdata.PlayerDataAPI;
 import lee.code.shops.Shops;
+import lee.code.shops.database.cache.CachePlayers;
 import lee.code.shops.enums.ShopType;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.ShopSignItemPreviewMenu;
@@ -239,9 +240,11 @@ public class ShopSignListener implements Listener {
       final UUID ownerID = getShopOwner(sign);
       if (ownerID == null) return;
       if (!ownerID.equals(playerID)) {
-        e.setCancelled(true);
-        player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_NOT_OWNER_BREAK.getComponent(null)));
-        return;
+        if (!shops.getCacheManager().getCachePlayers().hasAdminBypass(playerID)) {
+          e.setCancelled(true);
+          player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_NOT_OWNER_BREAK.getComponent(null)));
+          return;
+        }
       }
       block.getWorld().playSound(block.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1, 1);
       player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BREAK_SUCCESS.getComponent(null)));
@@ -250,9 +253,11 @@ public class ShopSignListener implements Listener {
       final UUID ownerID = getShopOwner(sign);
       if (ownerID == null) return;
       if (!ownerID.equals(playerID)) {
-        e.setCancelled(true);
-        player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_NOT_OWNER_BREAK.getComponent(null)));
-        return;
+        if (!shops.getCacheManager().getCachePlayers().hasAdminBypass(playerID)) {
+          e.setCancelled(true);
+          player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_NOT_OWNER_BREAK.getComponent(null)));
+          return;
+        }
       }
       block.getWorld().playSound(block.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1, 1);
       player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BREAK_SUCCESS.getComponent(null)));
