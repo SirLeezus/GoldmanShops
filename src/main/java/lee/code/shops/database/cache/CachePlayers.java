@@ -24,6 +24,7 @@ public class CachePlayers extends DatabaseHandler {
 
   public void setPlayerTable(PlayerTable playerTable) {
     playersCache.put(playerTable.getUniqueId(), playerTable);
+    shopSpawnData.cacheShopSpawn(playerTable);
   }
 
   public boolean hasPlayerData(UUID uuid) {
