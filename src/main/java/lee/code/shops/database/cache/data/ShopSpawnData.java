@@ -17,6 +17,7 @@ public class ShopSpawnData {
   }
 
   public void cacheShopSpawn(PlayerTable playerTable) {
+    if (playerTable.getShopSpawn() == null) return;
     shopSpawnCache.put(playerTable.getUniqueId(), playerTable.getShopSpawn());
   }
 
