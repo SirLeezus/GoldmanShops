@@ -9,3 +9,4 @@ commands:
   shop:
     description: Opens server shop menu.
     permission: shops.command.shop
+    aliases: [shops]
