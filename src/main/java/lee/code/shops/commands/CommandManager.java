@@ -39,6 +39,7 @@ public class CommandManager implements CommandExecutor {
     storeSubCommand(new NotificationsCMD(shops));
     storeSubCommand(new HelpCMD(shops));
     storeSubCommand(new AdminCMD(shops));
+    storeSubCommand(new SignHelpCMD());
   }
 
   private void storeSubCommand(SubCommand subCommand) {
