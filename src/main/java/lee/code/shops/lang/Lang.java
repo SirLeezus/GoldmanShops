@@ -24,7 +24,7 @@ public enum Lang {
   COMMAND_HELP_SUB_COMMAND("&3{0}&b. &e{1}"),
   COMMAND_HELP_SUB_COMMAND_HOVER("&6{0}"),
   COMMAND_SIGN_HELP_DIVIDER("&2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
-  COMMAND_SIGN_HELP_TITLE("             &a&l&nHow To Create A Shop With A Sign"),
+  COMMAND_SIGN_HELP_TITLE("             &a&l&nHow to Create a Shop With a Sign"),
   COMMAND_SIGN_HELP_STEP_1("&6Step 1&7: &ePlace down a chest, shulker box or barrel."),
   COMMAND_SIGN_HELP_STEP_2("&6Step 2&7: &ePlace the item and stack size you want to sell/buy per-transaction in the container."),
   COMMAND_SIGN_HELP_STEP_3("&6Step 3&7: &ePlace a sign on the container and type the following:"),

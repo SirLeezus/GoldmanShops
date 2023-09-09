@@ -94,6 +94,9 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
       case ARMOR -> {
         for (ArmorItem armorItem : ArmorItem.values()) items.add(armorItem.getItem());
       }
+      case SPAWNER -> {
+        for (SpawnerItem spawnerItem : SpawnerItem.values()) items.add(spawnerItem.getItem());
+      }
     }
     return items;
   }
