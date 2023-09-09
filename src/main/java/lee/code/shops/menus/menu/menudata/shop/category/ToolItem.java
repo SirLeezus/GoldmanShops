@@ -12,6 +12,7 @@ public enum ToolItem {
   DIAMOND_AXE(new ItemStack(Material.DIAMOND_AXE)),
   DIAMOND_HOE(new ItemStack(Material.DIAMOND_HOE)),
   DIAMOND_SWORD(new ItemStack(Material.DIAMOND_SWORD)),
+  BOW(new ItemStack(Material.BOW)),
   BUCKET(new ItemStack(Material.BUCKET)),
   FISHING_ROD(new ItemStack(Material.FISHING_ROD)),
   CARROT_ON_A_STICK(new ItemStack(Material.CARROT_ON_A_STICK)),

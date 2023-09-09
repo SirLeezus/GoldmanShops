@@ -14,9 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ShopPlayerMenu extends MenuPaginatedGUI {
@@ -54,6 +52,7 @@ public class ShopPlayerMenu extends MenuPaginatedGUI {
     final ItemStack head = PlayerDataAPI.getPlayerHead(shopOwner);
     final ItemMeta headMeta = head.getItemMeta();
     headMeta.displayName(Lang.MENU_SHOP_PLAYER_HEAD_NAME.getComponent(new String[]{targetName}));
+    headMeta.lore(Collections.singletonList(Lang.MENU_SHOP_PLAYER_HEAD_LORE.getComponent(null)));
     head.setItemMeta(headMeta);
     return new MenuButton()
       .creator(p -> head)

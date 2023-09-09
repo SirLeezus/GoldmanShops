@@ -2,6 +2,7 @@ package lee.code.shops.menus.menu;
 
 import lee.code.economy.EcoAPI;
 import lee.code.shops.Data;
+import lee.code.shops.Shops;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.menudata.MenuItem;
 import lee.code.shops.menus.menu.menudata.shop.Rout;
@@ -19,14 +20,14 @@ import java.util.UUID;
 
 public class ShopItemMenu extends MenuGUI {
   private final MenuManager menuManager;
-  private final Data data;
+  private final Shops shops;
   private final ItemStack item;
   private final Rout rout;
   private final int currentPage;
 
-  public ShopItemMenu(MenuManager menuManager, Data data, ItemStack item, Rout rout, int currentPage) {
+  public ShopItemMenu(MenuManager menuManager, Shops shops, ItemStack item, Rout rout, int currentPage) {
     this.menuManager = menuManager;
-    this.data = data;
+    this.shops = shops;
     this.item = item;
     this.rout = rout;
     this.currentPage = currentPage;
@@ -53,7 +54,7 @@ public class ShopItemMenu extends MenuGUI {
     switch (shopInterfaceItem.getShopType()) {
       case BUY -> {
         final int amount = shopInterfaceItem.getAmount() == 0 ? ItemUtil.getFreeSpace(player, item) : shopInterfaceItem.getAmount();
-        final double value = data.getItemBuyValue(item);
+        final double value = shops.getData().getItemBuyValue(item);
         return new MenuButton()
           .creator(p-> shopInterfaceItem.createBuyInterfaceItem(value * amount, amount))
           .consumer(e -> {
@@ -66,7 +67,7 @@ public class ShopItemMenu extends MenuGUI {
       }
       case SELL -> {
         final int amount = shopInterfaceItem.getAmount() == 0 ? ItemUtil.getItemAmount(player, item) : shopInterfaceItem.getAmount();
-        final double value = data.getItemSellValue(item);
+        final double value = shops.getData().getItemSellValue(item);
         return new MenuButton()
           .creator(p-> shopInterfaceItem.createSellInterfaceItem(value * amount, amount))
           .consumer(e -> {
@@ -96,12 +97,12 @@ public class ShopItemMenu extends MenuGUI {
     addButton(49, new MenuButton()
       .creator(p -> MenuItem.BACK_MENU.createItem())
       .consumer(e -> {
-        menuManager.openMenu(new ShopCategoryMenu(menuManager, data, rout, currentPage), player);
+        menuManager.openMenu(new ShopCategoryMenu(menuManager, shops, rout, currentPage), player);
       }));
   }
 
   private void updateInventoryItems(Player player) {
-    final double buyValue = data.getItemBuyValue(item);
+    final double buyValue = shops.getData().getItemBuyValue(item);
     final int space = ItemUtil.getFreeSpace(player, item);
     final ItemStack buyInventory = ShopInterfaceItem.BUY_INVENTORY.createBuyInterfaceItem(buyValue * space, space);
     addButton(ShopInterfaceItem.BUY_INVENTORY.getSlot(), new MenuButton()
@@ -115,7 +116,7 @@ public class ShopItemMenu extends MenuGUI {
     getInventory().setItem(ShopInterfaceItem.BUY_INVENTORY.getSlot(), buyInventory);
 
     final int inventoryAmount = ItemUtil.getItemAmount(player, item);
-    final double sellValue = data.getItemSellValue(item);
+    final double sellValue = shops.getData().getItemSellValue(item);
     final ItemStack sellInventory = ShopInterfaceItem.SELL_INVENTORY.createSellInterfaceItem( sellValue * inventoryAmount, inventoryAmount);
     addButton(ShopInterfaceItem.SELL_INVENTORY.getSlot(), new MenuButton()
       .creator(p -> sellInventory)

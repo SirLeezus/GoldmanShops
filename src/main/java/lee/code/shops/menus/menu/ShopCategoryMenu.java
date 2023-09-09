@@ -1,6 +1,7 @@
 package lee.code.shops.menus.menu;
 
 import lee.code.shops.Data;
+import lee.code.shops.Shops;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.menudata.MenuItem;
 import lee.code.shops.menus.menu.menudata.shop.Rout;
@@ -20,14 +21,14 @@ import java.util.*;
 
 public class ShopCategoryMenu extends MenuPaginatedGUI {
   private final MenuManager menuManager;
-  private final Data data;
+  private final Shops shops;
   private final Rout rout;
   private int currentPage;
 
-  public ShopCategoryMenu(MenuManager menuManager, Data data, Rout rout, int currentPage) {
+  public ShopCategoryMenu(MenuManager menuManager, Shops shops, Rout rout, int currentPage) {
     this.menuManager = menuManager;
     this.rout = rout;
-    this.data =  data;
+    this.shops = shops;
     this.currentPage = currentPage;
     setInventory();
   }
@@ -58,15 +59,15 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     final ItemStack displayItem = new ItemStack(itemStack);
     final ItemMeta itemMeta = displayItem.getItemMeta();
     ItemUtil.setItemLore(itemMeta, Lang.MENU_SHOP_ITEM_LORE.getString(new String[]{
-      Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(data.getItemBuyValue(itemStack))}),
-      Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(data.getItemSellValue(itemStack))})
+      Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(shops.getData().getItemBuyValue(itemStack))}),
+      Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(shops.getData().getItemSellValue(itemStack))})
     }));
     displayItem.setItemMeta(itemMeta);
     ItemUtil.hideItemFlags(displayItem);
     return new MenuButton()
       .creator(p-> displayItem)
       .consumer(e -> {
-        menuManager.openMenu(new ShopItemMenu(menuManager, data, itemStack, rout, currentPage), player);
+        menuManager.openMenu(new ShopItemMenu(menuManager, shops, itemStack, rout, currentPage), player);
       });
   }
 
@@ -128,7 +129,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
       .creator(p -> MenuItem.BACK_MENU.createItem())
       .consumer(e -> {
         page = 0;
-        menuManager.openMenu(new ShopMainMenu(menuManager, data), player);
+        menuManager.openMenu(new ShopMainMenu(menuManager, shops), player);
       }));
   }
 }

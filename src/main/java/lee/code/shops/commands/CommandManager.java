@@ -79,7 +79,7 @@ public class CommandManager implements CommandExecutor {
     }
     if (sender instanceof Player player) {
       final MenuManager menuManager = shops.getMenuManager();
-      menuManager.openMenu(new ShopMainMenu(menuManager, shops.getData()), player);
+      menuManager.openMenu(new ShopMainMenu(menuManager, shops), player);
     } else {
       performAsync(sender, getSubCommand("help"), args);
     }

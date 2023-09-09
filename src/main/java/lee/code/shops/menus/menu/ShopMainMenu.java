@@ -1,7 +1,8 @@
 package lee.code.shops.menus.menu;
 
-import lee.code.shops.Data;
+import lee.code.shops.Shops;
 import lee.code.shops.lang.Lang;
+import lee.code.shops.menus.menu.menudata.MenuItem;
 import lee.code.shops.menus.menu.menudata.shop.ShopMainMenuItem;
 import lee.code.shops.menus.system.MenuButton;
 import lee.code.shops.menus.system.MenuGUI;
@@ -12,11 +13,11 @@ import org.bukkit.inventory.Inventory;
 
 public class ShopMainMenu extends MenuGUI {
   private final MenuManager menuManager;
-  private final Data data;
+  private final Shops shops;
 
-  public ShopMainMenu(MenuManager menuManager, Data data) {
+  public ShopMainMenu(MenuManager menuManager, Shops shops) {
     this.menuManager = menuManager;
-    this.data = data;
+    this.shops = shops;
     setInventory();
   }
 
@@ -31,6 +32,7 @@ public class ShopMainMenu extends MenuGUI {
     for (ShopMainMenuItem shopMainMenuItem : ShopMainMenuItem.values()) {
       addButton(shopMainMenuItem.getSlot(), createButton(player, shopMainMenuItem));
     }
+    addPlayerShopsButton(player);
     super.decorate(player);
   }
 
@@ -38,7 +40,15 @@ public class ShopMainMenu extends MenuGUI {
     return new MenuButton()
       .creator(p-> shopMainMenuItem.createItem())
       .consumer(e -> {
-        menuManager.openMenu(new ShopCategoryMenu(menuManager, data, shopMainMenuItem.getRout(), 0), player);
+        menuManager.openMenu(new ShopCategoryMenu(menuManager, shops, shopMainMenuItem.getRout(), 0), player);
       });
+  }
+
+  private void addPlayerShopsButton(Player player) {
+    addButton(49, new MenuButton()
+      .creator(p -> MenuItem.PLAYER_SHOPS_MENU.createItem())
+      .consumer(e -> {
+        menuManager.openMenu(new ShopPlayerMenu(shops.getCacheManager().getCachePlayers().getShopSpawnData()), player);
+      }));
   }
 }
