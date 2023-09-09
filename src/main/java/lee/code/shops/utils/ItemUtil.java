@@ -12,9 +12,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -69,6 +73,7 @@ public class ItemUtil {
     itemMeta.addItemFlags(ItemFlag.HIDE_DYE);
     itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+    itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
     itemStack.setItemMeta(itemMeta);
   }
 
@@ -186,5 +191,13 @@ public class ItemUtil {
       e.printStackTrace();
     }
     return null;
+  }
+
+  public static ItemStack createArmorWithTrim(ItemStack armor, TrimPattern trimPattern, TrimMaterial trimMaterial) {
+    final ArmorMeta armorMeta = (ArmorMeta) armor.getItemMeta();
+    final ArmorTrim trim = new ArmorTrim(trimMaterial, trimPattern);
+    armorMeta.setTrim(trim);
+    armor.setItemMeta(armorMeta);
+    return armor;
   }
 }

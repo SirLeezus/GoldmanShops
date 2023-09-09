@@ -86,7 +86,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
         for (DyeItem dyeItem : DyeItem.values()) items.add(dyeItem.getItem());
       }
       case BASIC_BLOCK -> {
-        for (BlockItem blockItem : BlockItem.values()) items.add(blockItem.getItem());
+        for (BasicBlockItem basicBlockItem : BasicBlockItem.values()) items.add(basicBlockItem.getItem());
       }
       case VEHICLE -> {
         for (VehicleItem vehicleItem : VehicleItem.values()) items.add(vehicleItem.getItem());

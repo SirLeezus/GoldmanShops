@@ -9,14 +9,14 @@ import org.bukkit.inventory.ItemStack;
 
 @AllArgsConstructor
 public enum ShopMainMenuItem {
-  BASIC_BLOCK(Material.TERRACOTTA, "&e&lBasic Block Category", 1, Rout.BASIC_BLOCK),
-  TOOL(Material.DIAMOND_AXE, "&e&lTool Category", 2, Rout.TOOL),
-  CROP(Material.BEETROOT, "&e&lCrop Category", 3, Rout.CROP),
-  WOOD(Material.OAK_LOG, "&e&lWood Category", 4, Rout.WOOD),
-  DYE(Material.RED_DYE, "&e&lDye Category", 5, Rout.DYE),
-  VEHICLE(Material.MINECART, "&e&lVehicle Category", 6, Rout.VEHICLE),
-  ARMOR(Material.DIAMOND_CHESTPLATE, "&e&lArmor Category", 7, Rout.ARMOR),
-
+  BASIC_BLOCK(Material.TERRACOTTA, "&e&lBasic Block Category", 10, Rout.BASIC_BLOCK),
+  SHEARS(Material.SHEARS, "&e&lTool Category", 12, Rout.TOOL),
+  CROP(Material.CARROT, "&e&lCrop Category", 14, Rout.CROP),
+  WOOD(Material.OAK_LOG, "&e&lWood Category", 16, Rout.WOOD),
+  DYE(Material.BLUE_DYE, "&e&lDye Category", 28, Rout.DYE),
+  VEHICLE(Material.MINECART, "&e&lVehicle Category", 30, Rout.VEHICLE),
+  ARMOR(Material.DIAMOND_CHESTPLATE, "&e&lArmor Category", 32, Rout.ARMOR),
+  SPAWNER(Material.CREEPER_HEAD, "&e&lSpawner Category", 34, Rout.SPAWNER),
   ;
 
   private final Material material;

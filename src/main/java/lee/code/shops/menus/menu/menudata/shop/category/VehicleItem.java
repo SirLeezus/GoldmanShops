@@ -12,6 +12,7 @@ public enum VehicleItem {
   BAMBOO_RAFT(new ItemStack(Material.BAMBOO_RAFT)),
   BAMBOO_CHEST_RAFT(new ItemStack(Material.BAMBOO_CHEST_RAFT)),
   MINECART(new ItemStack(Material.MINECART)),
+  CHEST_MINECART(new ItemStack(Material.CHEST_MINECART)),
 
   ;
 
