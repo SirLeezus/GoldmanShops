@@ -4,8 +4,7 @@ import lee.code.shops.Data;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.menudata.MenuItem;
 import lee.code.shops.menus.menu.menudata.shop.Rout;
-import lee.code.shops.menus.menu.menudata.shop.category.RedstoneItem;
-import lee.code.shops.menus.menu.menudata.shop.category.ToolItem;
+import lee.code.shops.menus.menu.menudata.shop.category.*;
 import lee.code.shops.menus.system.MenuButton;
 import lee.code.shops.menus.system.MenuManager;
 import lee.code.shops.menus.system.MenuPaginatedGUI;
@@ -13,7 +12,6 @@ import lee.code.shops.utils.CoreUtil;
 import lee.code.shops.utils.ItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,24 +22,27 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
   private final MenuManager menuManager;
   private final Data data;
   private final Rout rout;
+  private int currentPage;
 
-  public ShopCategoryMenu(MenuManager menuManager, Data data, Rout rout) {
+  public ShopCategoryMenu(MenuManager menuManager, Data data, Rout rout, int currentPage) {
     this.menuManager = menuManager;
     this.rout = rout;
     this.data =  data;
+    this.currentPage = currentPage;
     setInventory();
   }
 
   @Override
   protected Inventory createInventory() {
-    return Bukkit.createInventory(null, 54, Lang.MENU_TITLE_SHOP.getComponent(null));
+    return Bukkit.createInventory(null, 54, Lang.MENU_TITLE_CATEGORY_SHOP.getComponent(new String[]{CoreUtil.capitalize(rout.name())}));
   }
 
   @Override
   public void decorate(Player player) {
     addBorderGlass();
-    final List<ItemStack> items = getCategoryItems(rout, true);
+    final List<ItemStack> items = getCategoryItems(rout);
     int slot = 0;
+    page = currentPage;
     for (int i = 0; i < maxItemsPerPage; i++) {
       index = maxItemsPerPage * page + i;
       if (index >= items.size()) break;
@@ -65,26 +66,34 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     return new MenuButton()
       .creator(p-> displayItem)
       .consumer(e -> {
-        menuManager.openMenu(new ShopItemMenu(menuManager, data, itemStack, rout), player);
+        menuManager.openMenu(new ShopItemMenu(menuManager, data, itemStack, rout, currentPage), player);
       });
   }
 
-  private List<ItemStack> getCategoryItems(Rout rout, boolean sort) {
+  private List<ItemStack> getCategoryItems(Rout rout) {
     final List<ItemStack> items = new ArrayList<>();
     switch (rout) {
-      case REDSTONE -> {
-        for (RedstoneItem redstoneItem : RedstoneItem.values()) items.add(redstoneItem.getItem());
-      }
-      case TOOLS -> {
+      case TOOL -> {
         for (ToolItem toolItem : ToolItem.values()) items.add(toolItem.getItem());
       }
-    }
-    if (sort) {
-      items.sort((item1, item2) -> {
-        final String name1 = item1.getType().name();
-        final String name2 = item2.getType().name();
-        return name1.compareTo(name2);
-      });
+      case CROP -> {
+        for (CropItem cropItem : CropItem.values()) items.add(cropItem.getItem());
+      }
+      case WOOD -> {
+        for (WoodItem woodItem : WoodItem.values()) items.add(woodItem.getItem());
+      }
+      case DYE -> {
+        for (DyeItem dyeItem : DyeItem.values()) items.add(dyeItem.getItem());
+      }
+      case BASIC_BLOCK -> {
+        for (BlockItem blockItem : BlockItem.values()) items.add(blockItem.getItem());
+      }
+      case VEHICLE -> {
+        for (VehicleItem vehicleItem : VehicleItem.values()) items.add(vehicleItem.getItem());
+      }
+      case ARMOR -> {
+        for (ArmorItem armorItem : ArmorItem.values()) items.add(armorItem.getItem());
+      }
     }
     return items;
   }
@@ -92,8 +101,9 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
   private void addPaginatedButtons(Player player) {
     addButton(51, new MenuButton().creator(p -> MenuItem.NEXT_PAGE.createItem())
       .consumer(e -> {
-        if (!((index + 1) >= getCategoryItems(rout, false).size())) {
+        if (!((index + 1) >= getCategoryItems(rout).size())) {
           page += 1;
+          currentPage = page;
           clearInventory();
           clearButtons();
           decorate(player);
@@ -105,6 +115,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_PREVIOUS_PAGE.getComponent(null)));
         } else {
           page -= 1;
+          currentPage = page;
           clearInventory();
           clearButtons();
           decorate(player);

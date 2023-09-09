@@ -22,18 +22,20 @@ public class ShopItemMenu extends MenuGUI {
   private final Data data;
   private final ItemStack item;
   private final Rout rout;
+  private final int currentPage;
 
-  public ShopItemMenu(MenuManager menuManager, Data data, ItemStack item, Rout rout) {
+  public ShopItemMenu(MenuManager menuManager, Data data, ItemStack item, Rout rout, int currentPage) {
     this.menuManager = menuManager;
     this.data = data;
     this.item = item;
     this.rout = rout;
+    this.currentPage = currentPage;
     setInventory();
   }
 
   @Override
   protected Inventory createInventory() {
-    return Bukkit.createInventory(null, 54, Lang.MENU_TITLE_SHOP.getComponent(null));
+    return Bukkit.createInventory(null, 54,  Lang.MENU_TITLE_CATEGORY_SHOP.getComponent(new String[]{CoreUtil.capitalize(rout.name())}));
   }
 
   @Override
@@ -94,7 +96,7 @@ public class ShopItemMenu extends MenuGUI {
     addButton(49, new MenuButton()
       .creator(p -> MenuItem.BACK_MENU.createItem())
       .consumer(e -> {
-        menuManager.openMenu(new ShopCategoryMenu(menuManager, data, rout), player);
+        menuManager.openMenu(new ShopCategoryMenu(menuManager, data, rout, currentPage), player);
       }));
   }
 

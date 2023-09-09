@@ -9,9 +9,13 @@ import org.bukkit.inventory.ItemStack;
 
 @AllArgsConstructor
 public enum ShopMainMenuItem {
-  RED_STONE(Material.REDSTONE, "&c&lRestone Category", 0, Rout.REDSTONE),
-  BLOCKS(Material.BRICK, "&9&lBlock Category", 1, Rout.BLOCKS),
-  TOOLS(Material.DIAMOND_AXE, "&d&lTool Category", 2, Rout.TOOLS),
+  BASIC_BLOCK(Material.TERRACOTTA, "&e&lBasic Block Category", 1, Rout.BASIC_BLOCK),
+  TOOL(Material.DIAMOND_AXE, "&e&lTool Category", 2, Rout.TOOL),
+  CROP(Material.BEETROOT, "&e&lCrop Category", 3, Rout.CROP),
+  WOOD(Material.OAK_LOG, "&e&lWood Category", 4, Rout.WOOD),
+  DYE(Material.RED_DYE, "&e&lDye Category", 5, Rout.DYE),
+  VEHICLE(Material.MINECART, "&e&lVehicle Category", 6, Rout.VEHICLE),
+  ARMOR(Material.DIAMOND_CHESTPLATE, "&e&lArmor Category", 7, Rout.ARMOR),
 
   ;
 

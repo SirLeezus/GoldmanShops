@@ -38,7 +38,7 @@ public class ShopMainMenu extends MenuGUI {
     return new MenuButton()
       .creator(p-> shopMainMenuItem.createItem())
       .consumer(e -> {
-        menuManager.openMenu(new ShopCategoryMenu(menuManager, data, shopMainMenuItem.getRout()), player);
+        menuManager.openMenu(new ShopCategoryMenu(menuManager, data, shopMainMenuItem.getRout(), 0), player);
       });
   }
 }
