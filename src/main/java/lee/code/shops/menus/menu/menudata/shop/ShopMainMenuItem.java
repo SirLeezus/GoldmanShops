@@ -14,7 +14,7 @@ public enum ShopMainMenuItem {
   CROP(Material.CARROT, "&e&lCrop Shop", 14, Rout.CROP),
   WOOD(Material.OAK_LOG, "&e&lWood Shop", 16, Rout.WOOD),
   DYE(Material.BLUE_DYE, "&e&lDye Shop", 28, Rout.DYE),
-  VEHICLE(Material.MINECART, "&e&lVehicle Shop", 30, Rout.VEHICLE),
+  VEHICLE(Material.OAK_BOAT, "&e&lVehicle Shop", 30, Rout.VEHICLE),
   ARMOR(Material.DIAMOND_CHESTPLATE, "&e&lArmor Shop", 32, Rout.ARMOR),
   SPAWNER(Material.CREEPER_HEAD, "&e&lSpawner Shop", 34, Rout.SPAWNER),
   ;
