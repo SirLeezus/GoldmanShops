@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 
 public class Shops extends JavaPlugin {
+  @Getter private static Shops instance;
   @Getter private CommandManager commandManager;
   @Getter private MenuManager menuManager;
   @Getter private Data data;
@@ -25,6 +26,7 @@ public class Shops extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    instance = this;
     this.databaseManager = new DatabaseManager(this);
     this.cacheManager = new CacheManager(this, databaseManager);
     this.commandManager = new CommandManager(this);

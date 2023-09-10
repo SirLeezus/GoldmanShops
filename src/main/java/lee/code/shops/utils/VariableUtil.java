@@ -8,14 +8,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.regex.Pattern;
 
 public class VariableUtil {
-  private static final Pattern displayNamePattern = Pattern.compile("\\{display-name-item\\}");
+  private static final Pattern displayItemNamePattern = Pattern.compile("\\{display-name-item\\}");
 
   public static Component parseVariables(Component component, ItemStack itemStack) {
     Component targetMessage = component;
     final ItemMeta itemMeta = itemStack.getItemMeta();
     if (itemMeta == null) return targetMessage;
-    if (itemMeta.hasDisplayName()) targetMessage = targetMessage.replaceText(createTextReplacementConfig(displayNamePattern, itemStack.getItemMeta().displayName()));
-    if (!itemMeta.hasDisplayName()) targetMessage = targetMessage.replaceText(createTextReplacementConfig(displayNamePattern, CoreUtil.parseColorComponent(CoreUtil.capitalize(itemStack.getType().name()))));
+    if (itemMeta.hasDisplayName()) targetMessage = targetMessage.replaceText(createTextReplacementConfig(displayItemNamePattern, itemStack.getItemMeta().displayName()));
+    if (!itemMeta.hasDisplayName()) targetMessage = targetMessage.replaceText(createTextReplacementConfig(displayItemNamePattern, CoreUtil.parseColorComponent(CoreUtil.capitalize(itemStack.getType().name()))));
     return targetMessage;
   }
 
