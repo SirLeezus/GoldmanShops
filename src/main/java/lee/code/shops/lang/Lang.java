@@ -32,7 +32,7 @@ public enum Lang {
   COMMAND_SIGN_HELP_STEP_3_SIGN_2("&6Line 2&7: &f<buy/sell>"),
   COMMAND_SIGN_HELP_STEP_3_SIGN_3("&6Line 3&7: &f<cost>"),
   COMMAND_SIGN_HELP_DONE("&eCongratulations! If you followed this guide correctly you should have created a new shop with the container you placed the sign on!"),
-  SHOP_SIGN_BREAK_SUCCESS("&7You broke a shop sign."),
+  SHOP_SIGN_BREAK_SUCCESS("&7You broke a player shop sign."),
   SHOP_SIGN_SELL_SUCCESS("&aYou successfully sold &3x{0} {display-name-item} &afor {1} &ato &6{2}&a!"),
   SHOP_SIGN_SELL_OWNER_SUCCESS("&aThe player &6{0} &asold you &3x{1} {display-name-item} &afor {2}&a!"),
   SHOP_SIGN_BUY_SUCCESS("&aYou successfully bought &3x{0} {display-name-item} &afor {1}&a from &6{2}&a!"),
