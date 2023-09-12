@@ -62,7 +62,12 @@ public class ShopItemMenu extends MenuGUI {
             final int playerAmount = shopInterfaceItem.getAmount() == 0 ? playerSpace : shopInterfaceItem.getAmount();
             final double playerCost = value * playerAmount;
             final boolean result = processBuyTransaction(player, item, playerCost, playerAmount);
-            if (result) updateInventoryItems(player);
+            if (result) {
+              getMenuSoundManager().playPurchaseSound(player);
+              updateInventoryItems(player);
+            } else {
+              getMenuSoundManager().playErrorSound(player);
+            }
           });
       }
       case SELL -> {
@@ -75,7 +80,12 @@ public class ShopItemMenu extends MenuGUI {
             final int playerAmount = shopInterfaceItem.getAmount() == 0 ? inventoryAmount : shopInterfaceItem.getAmount();
             final double playerReceive = value * playerAmount;
             final boolean result = processSellTransaction(player, item, playerReceive, playerAmount);
-            if (result) updateInventoryItems(player);
+            if (result) {
+              getMenuSoundManager().playPurchaseSound(player);
+              updateInventoryItems(player);
+            } else {
+              getMenuSoundManager().playErrorSound(player);
+            }
           });
       }
     }
@@ -97,6 +107,7 @@ public class ShopItemMenu extends MenuGUI {
     addButton(49, new MenuButton()
       .creator(p -> MenuItem.BACK_MENU.createItem())
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         menuManager.openMenu(new ShopCategoryMenu(menuManager, shops, rout, currentPage), player);
       }));
   }
@@ -111,7 +122,12 @@ public class ShopItemMenu extends MenuGUI {
         final int playerSpace = ItemUtil.getFreeSpace(player, item);
         final double playerCost = buyValue * playerSpace;
         final boolean result = processBuyTransaction(player, item, playerCost, playerSpace);
-        if (result) updateInventoryItems(player);
+        if (result) {
+          getMenuSoundManager().playPurchaseSound(player);
+          updateInventoryItems(player);
+        } else {
+          getMenuSoundManager().playErrorSound(player);
+        }
       }));
     getInventory().setItem(ShopInterfaceItem.BUY_INVENTORY.getSlot(), buyInventory);
 
@@ -124,7 +140,12 @@ public class ShopItemMenu extends MenuGUI {
         final int playerAmount = ItemUtil.getItemAmount(player, item);
         final double playerReceive = sellValue * playerAmount;
         final boolean result = processSellTransaction(player, item, playerReceive, playerAmount);
-        if (result) updateInventoryItems(player);
+        if (result) {
+          getMenuSoundManager().playSellSound(player);
+          updateInventoryItems(player);
+        } else {
+          getMenuSoundManager().playErrorSound(player);
+        }
       }));
     getInventory().setItem(ShopInterfaceItem.SELL_INVENTORY.getSlot(), sellInventory);
   }

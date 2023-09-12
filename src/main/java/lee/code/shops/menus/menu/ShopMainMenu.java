@@ -40,6 +40,7 @@ public class ShopMainMenu extends MenuGUI {
     return new MenuButton()
       .creator(p-> shopMainMenuItem.createItem())
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         menuManager.openMenu(new ShopCategoryMenu(menuManager, shops, shopMainMenuItem.getRout(), 0), player);
       });
   }
@@ -48,6 +49,7 @@ public class ShopMainMenu extends MenuGUI {
     addButton(49, new MenuButton()
       .creator(p -> MenuItem.PLAYER_SHOPS_MENU.createItem())
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         menuManager.openMenu(new ShopPlayerMenu(shops.getCacheManager().getCachePlayers().getShopSpawnData()), player);
       }));
   }

@@ -57,6 +57,7 @@ public class ShopPlayerMenu extends MenuPaginatedGUI {
     return new MenuButton()
       .creator(p -> head)
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         player.teleportAsync(CoreUtil.parseLocation(location)).thenAccept(result -> {
           if (result) player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.MENU_SHOP_PLAYER_TELEPORT_SUCCESSFUL.getComponent(new String[]{targetName})));
           else player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.MENU_SHOP_PLAYER_TELEPORT_FAILED.getComponent(new String[]{targetName})));
@@ -69,6 +70,7 @@ public class ShopPlayerMenu extends MenuPaginatedGUI {
       .consumer(e -> {
         if (!((index + 1) >= shopSpawnData.getAllShopSpawns().size())) {
           page += 1;
+          getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
           decorate(player);
@@ -80,6 +82,7 @@ public class ShopPlayerMenu extends MenuPaginatedGUI {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_PREVIOUS_PAGE.getComponent(null)));
         } else {
           page -= 1;
+          getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
           decorate(player);

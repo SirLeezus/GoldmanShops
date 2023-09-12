@@ -43,7 +43,6 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     addBorderGlass();
     final List<ItemStack> items = getCategoryItems(rout);
     int slot = 0;
-    page = currentPage;
     for (int i = 0; i < maxItemsPerPage; i++) {
       index = maxItemsPerPage * page + i;
       if (index >= items.size()) break;
@@ -67,6 +66,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     return new MenuButton()
       .creator(p-> displayItem)
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         menuManager.openMenu(new ShopItemMenu(menuManager, shops, itemStack, rout, currentPage), player);
       });
   }
@@ -107,7 +107,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
       .consumer(e -> {
         if (!((index + 1) >= getCategoryItems(rout).size())) {
           page += 1;
-          currentPage = page;
+          getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
           decorate(player);
@@ -119,7 +119,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_PREVIOUS_PAGE.getComponent(null)));
         } else {
           page -= 1;
-          currentPage = page;
+          getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
           decorate(player);
@@ -128,7 +128,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     addButton(49, new MenuButton()
       .creator(p -> MenuItem.BACK_MENU.createItem())
       .consumer(e -> {
-        page = 0;
+        getMenuSoundManager().playClickSound(player);
         menuManager.openMenu(new ShopMainMenu(menuManager, shops), player);
       }));
   }

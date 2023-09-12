@@ -4,7 +4,6 @@ import lee.code.colors.ColorAPI;
 import lee.code.economy.EcoAPI;
 import lee.code.playerdata.PlayerDataAPI;
 import lee.code.shops.Shops;
-import lee.code.shops.database.cache.CachePlayers;
 import lee.code.shops.enums.ShopType;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.ShopSignItemPreviewMenu;
@@ -58,11 +57,11 @@ public class ShopSignListener implements Listener {
       return;
     }
     final String option = plainTextComponentSerializer.serialize(lines.get(1));
-    final boolean isBuyShop = !option.equalsIgnoreCase("sell");
     if (!option.equalsIgnoreCase("buy") && !option.equalsIgnoreCase("sell")) {
       player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_INVALID_TYPE.getComponent(new String[]{option})));
       return;
     }
+    final boolean isBuyShop = !option.equalsIgnoreCase("sell");
     final ShopType signShopType = isBuyShop ? ShopType.BUY : ShopType.SELL;
     final String valueString = plainTextComponentSerializer.serialize(lines.get(2));
     if (!CoreUtil.isPositiveDoubleNumber(valueString)) {

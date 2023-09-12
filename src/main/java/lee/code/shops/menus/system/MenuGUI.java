@@ -1,6 +1,7 @@
 package lee.code.shops.menus.system;
 
 import lee.code.shops.menus.menu.menudata.MenuItem;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -17,6 +18,7 @@ public abstract class MenuGUI implements InventoryHandler {
   public final ItemStack fillerGlass = MenuItem.FILLER_GLASS.createItem();
   private final DelayManager delayManager = new DelayManager();
   private final Map<Integer, MenuButton> buttonMap = new HashMap<>();
+  @Getter private final MenuSoundManager menuSoundManager = new MenuSoundManager();
 
   public void setInventory() {
     this.inventory = createInventory();
@@ -60,31 +62,29 @@ public abstract class MenuGUI implements InventoryHandler {
   }
 
   @Override
-  public void onClick(InventoryClickEvent event) {
-    final Player player = (Player) event.getWhoClicked();
-    if (player.getInventory().equals(event.getClickedInventory())) {
-      if (event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
-        event.setCancelled(true);
+  public void onClick(InventoryClickEvent e) {
+    final Player player = (Player) e.getWhoClicked();
+    if (player.getInventory().equals(e.getClickedInventory())) {
+      if (e.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
+        e.setCancelled(true);
         return;
       }
       return;
     }
-    event.setCancelled(true);
+    e.setCancelled(true);
     if (delayManager.hasDelayOrSchedule(player.getUniqueId())) return;
-    final int slot = event.getSlot();
+    final int slot = e.getSlot();
     final MenuButton button = buttonMap.get(slot);
-    if (button != null) {
-      button.getEventConsumer().accept(event);
-    }
+    if (button != null) button.getEventConsumer().accept(e);
   }
 
   @Override
-  public void onOpen(InventoryOpenEvent event) {
-    decorate((Player) event.getPlayer());
+  public void onOpen(InventoryOpenEvent e) {
+    decorate((Player) e.getPlayer());
   }
 
   @Override
-  public void onClose(InventoryCloseEvent event) {
+  public void onClose(InventoryCloseEvent e) {
   }
 
   protected abstract Inventory createInventory();
