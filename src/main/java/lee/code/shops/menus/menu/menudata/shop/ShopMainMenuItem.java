@@ -16,7 +16,7 @@ public enum ShopMainMenuItem {
   DYE(Material.BLUE_DYE, "&e&lDye Shop", 28, Rout.DYE),
   VEHICLE(Material.OAK_BOAT, "&e&lVehicle Shop", 30, Rout.VEHICLE),
   ARMOR(Material.DIAMOND_CHESTPLATE, "&e&lArmor Shop", 32, Rout.ARMOR),
-  SPAWNER(Material.CREEPER_HEAD, "&e&lSpawner Shop", 34, Rout.SPAWNER),
+  SPAWNER(Material.PIGLIN_HEAD, "&e&lSpawner Shop", 34, Rout.SPAWNER),
   ;
 
   private final Material material;

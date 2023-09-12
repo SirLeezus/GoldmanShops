@@ -28,8 +28,6 @@ public enum SpawnerItem {
   CAT(ItemUtil.createSpawner(EntityType.CAT)),
   OCELOT(ItemUtil.createSpawner(EntityType.OCELOT)),
   PARROT(ItemUtil.createSpawner(EntityType.PARROT)),
-  IRON_GOLEM(ItemUtil.createSpawner(EntityType.IRON_GOLEM)),
-  VILLAGER(ItemUtil.createSpawner(EntityType.VILLAGER)),
   WANDERING_TRADER(ItemUtil.createSpawner(EntityType.WANDERING_TRADER)),
   PANDA(ItemUtil.createSpawner(EntityType.PANDA)),
   TURTLE(ItemUtil.createSpawner(EntityType.TURTLE)),
@@ -65,8 +63,6 @@ public enum SpawnerItem {
   ENDERMAN(ItemUtil.createSpawner(EntityType.ENDERMAN)),
   ENDERMITE(ItemUtil.createSpawner(EntityType.ENDERMITE)),
   SILVERFISH(ItemUtil.createSpawner(EntityType.SILVERFISH)),
-  EVOKER(ItemUtil.createSpawner(EntityType.EVOKER)),
-  GHAST(ItemUtil.createSpawner(EntityType.GHAST)),
   PHANTOM(ItemUtil.createSpawner(EntityType.PHANTOM)),
   PIGLIN(ItemUtil.createSpawner(EntityType.PIGLIN)),
   ZOMBIFIED_PIGLIN(ItemUtil.createSpawner(EntityType.ZOMBIFIED_PIGLIN)),
@@ -75,6 +71,10 @@ public enum SpawnerItem {
   SHULKER(ItemUtil.createSpawner(EntityType.SHULKER)),
   VINDICATOR(ItemUtil.createSpawner(EntityType.VINDICATOR)),
   ILLUSIONER(ItemUtil.createSpawner(EntityType.ILLUSIONER)),
+  GHAST(ItemUtil.createSpawner(EntityType.GHAST)),
+  VILLAGER(ItemUtil.createSpawner(EntityType.VILLAGER)),
+  IRON_GOLEM(ItemUtil.createSpawner(EntityType.IRON_GOLEM)),
+  EVOKER(ItemUtil.createSpawner(EntityType.EVOKER)),
 
   ;
   @Getter private final ItemStack item;

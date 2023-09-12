@@ -6,6 +6,8 @@ import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
 @AllArgsConstructor
 public enum ItemValue {
@@ -664,7 +666,7 @@ public enum ItemValue {
   SCUTE(new ItemStack(Material.SCUTE), 0, 5),
   FLINT_AND_STEEL(new ItemStack(Material.FLINT_AND_STEEL), 100, 12),
   APPLE(new ItemStack(Material.APPLE), 0, 4),
-  BOW(new ItemStack(Material.BOW), 0, 6.5),
+  BOW(new ItemStack(Material.BOW), 100, 6.5),
   ARROW(new ItemStack(Material.ARROW), 0, 1),
   COAL(new ItemStack(Material.COAL), 0, 2),
   CHARCOAL(new ItemStack(Material.CHARCOAL), 0, 2),
@@ -729,6 +731,10 @@ public enum ItemValue {
   IRON_CHESTPLATE(new ItemStack(Material.IRON_CHESTPLATE), 0, 80),
   IRON_LEGGINGS(new ItemStack(Material.IRON_LEGGINGS), 0, 70),
   IRON_BOOTS(new ItemStack(Material.IRON_BOOTS), 0, 40),
+  SHOP_DIAMOND_HELMET(ItemUtil.createArmorWithTrim(new ItemStack(Material.DIAMOND_HELMET), TrimPattern.DUNE, TrimMaterial.GOLD), 1000, 125),
+  SHOP_DIAMOND_CHESTPLATE(ItemUtil.createArmorWithTrim(new ItemStack(Material.DIAMOND_CHESTPLATE), TrimPattern.DUNE, TrimMaterial.GOLD), 1200, 200),
+  SHOP_DIAMOND_LEGGINGS(ItemUtil.createArmorWithTrim(new ItemStack(Material.DIAMOND_LEGGINGS), TrimPattern.DUNE, TrimMaterial.GOLD), 1100, 175),
+  SHOP_DIAMOND_BOOTS(ItemUtil.createArmorWithTrim(new ItemStack(Material.DIAMOND_BOOTS), TrimPattern.DUNE, TrimMaterial.GOLD), 700, 100),
   DIAMOND_HELMET(new ItemStack(Material.DIAMOND_HELMET), 0, 125),
   DIAMOND_CHESTPLATE(new ItemStack(Material.DIAMOND_CHESTPLATE), 0, 200),
   DIAMOND_LEGGINGS(new ItemStack(Material.DIAMOND_LEGGINGS), 0, 175),
@@ -1026,8 +1032,8 @@ public enum ItemValue {
   CAT_SPAWNER(ItemUtil.createSpawner(EntityType.CAT), 1000000, 1000),
   OCELOT_SPAWNER(ItemUtil.createSpawner(EntityType.OCELOT), 1000000, 1000),
   PARROT_SPAWNER(ItemUtil.createSpawner(EntityType.PARROT), 1000000, 1000),
-  IRON_GOLEM_SPAWNER(ItemUtil.createSpawner(EntityType.IRON_GOLEM), 5000000, 1000),
-  VILLAGER_SPAWNER(ItemUtil.createSpawner(EntityType.VILLAGER), 5000000, 1000),
+  IRON_GOLEM_SPAWNER(ItemUtil.createSpawner(EntityType.IRON_GOLEM), 5000000, 5000),
+  VILLAGER_SPAWNER(ItemUtil.createSpawner(EntityType.VILLAGER), 5000000, 5000),
   WANDERING_TRADER_SPAWNER(ItemUtil.createSpawner(EntityType.WANDERING_TRADER), 1000000, 1000),
   PANDA_SPAWNER(ItemUtil.createSpawner(EntityType.PANDA), 1000000, 1000),
   TURTLE_SPAWNER(ItemUtil.createSpawner(EntityType.TURTLE), 1000000, 1000),
@@ -1064,7 +1070,7 @@ public enum ItemValue {
   ENDERMITE_SPAWNER(ItemUtil.createSpawner(EntityType.ENDERMITE), 1000000, 1000),
   SILVERFISH_SPAWNER(ItemUtil.createSpawner(EntityType.SILVERFISH), 1000000, 1000),
   EVOKER_SPAWNER(ItemUtil.createSpawner(EntityType.EVOKER), 10000000, 10000),
-  GHAST_SPAWNER(ItemUtil.createSpawner(EntityType.GHAST), 2000000, 1000),
+  GHAST_SPAWNER(ItemUtil.createSpawner(EntityType.GHAST), 2000000, 2000),
   PHANTOM_SPAWNER(ItemUtil.createSpawner(EntityType.PHANTOM), 1000000, 1000),
   PIGLIN_SPAWNER(ItemUtil.createSpawner(EntityType.PIGLIN), 1000000, 1000),
   ZOMBIFIED_PIGLIN_SPAWNER(ItemUtil.createSpawner(EntityType.ZOMBIFIED_PIGLIN), 1000000, 1000),
