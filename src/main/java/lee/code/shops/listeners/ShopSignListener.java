@@ -4,6 +4,7 @@ import lee.code.colors.ColorAPI;
 import lee.code.economy.EcoAPI;
 import lee.code.playerdata.PlayerDataAPI;
 import lee.code.shops.Shops;
+import lee.code.shops.database.cache.CachePlayers;
 import lee.code.shops.enums.ShopType;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.ShopSignItemPreviewMenu;
@@ -166,6 +167,7 @@ public class ShopSignListener implements Listener {
         sendShopInfoMessage(player, sign, shopBlockInventory, item, ownerID, shopType, amount, cost, profit);
         return;
       }
+      final CachePlayers cachePlayers = shops.getCacheManager().getCachePlayers();
       switch (shopType) {
         case SELL -> {
           final int shopFreeSpace = ShopSignUtil.getFreeSpace(shopBlockInventory, item);
@@ -189,7 +191,8 @@ public class ShopSignListener implements Listener {
           setShopProfit(sign, profit + cost);
           updateSignTitle(sign, (shopFreeSpace - amount) < amount);
           runPurchaseEffectAndSound(block);
-          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_SELL_SUCCESS.getComponent(new String[]{CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})})), item));
+          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_SELL_SUCCESS.getComponent(new String[]{CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)}), ColorAPI.getNameColor(ownerID, PlayerDataAPI.getName(ownerID))})), item));
+          if (cachePlayers.hasNotificationsOn(ownerID)) PlayerDataAPI.sendPlayerMessageIfOnline(ownerID, VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_SELL_OWNER_SUCCESS.getComponent(new String[]{ColorAPI.getNameColor(playerID, player.getName()), CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})})), item));
         }
         case BUY -> {
           final int shopStock = ShopSignUtil.getItemAmount(shopBlockInventory, item);
@@ -213,7 +216,8 @@ public class ShopSignListener implements Listener {
           setShopProfit(sign, profit + cost);
           updateSignTitle(sign, (shopStock - amount) < amount);
           runPurchaseEffectAndSound(block);
-          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BUY_SUCCESS.getComponent(new String[]{CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})})), item));
+          player.sendMessage(VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BUY_SUCCESS.getComponent(new String[]{CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)}), ColorAPI.getNameColor(ownerID, PlayerDataAPI.getName(ownerID))})), item));
+          if (cachePlayers.hasNotificationsOn(ownerID)) PlayerDataAPI.sendPlayerMessageIfOnline(ownerID, VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BUY_OWNER_SUCCESS.getComponent(new String[]{ColorAPI.getNameColor(playerID, player.getName()), CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})})), item));
         }
       }
     } else if (shops.getData().getSupportedSignBlocks().contains(block.getType())) {
