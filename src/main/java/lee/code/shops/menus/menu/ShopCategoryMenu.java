@@ -1,6 +1,5 @@
 package lee.code.shops.menus.menu;
 
-import lee.code.shops.Data;
 import lee.code.shops.Shops;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.menudata.MenuItem;
@@ -43,6 +42,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
     addBorderGlass();
     final List<ItemStack> items = getCategoryItems(rout);
     int slot = 0;
+    page = currentPage;
     for (int i = 0; i < maxItemsPerPage; i++) {
       index = maxItemsPerPage * page + i;
       if (index >= items.size()) break;
@@ -107,6 +107,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
       .consumer(e -> {
         if (!((index + 1) >= getCategoryItems(rout).size())) {
           page += 1;
+          currentPage = page;
           getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
@@ -119,6 +120,7 @@ public class ShopCategoryMenu extends MenuPaginatedGUI {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_PREVIOUS_PAGE.getComponent(null)));
         } else {
           page -= 1;
+          currentPage = page;
           getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
