@@ -1,7 +1,6 @@
 package lee.code.shops.menus.menu;
 
 import lee.code.economy.EcoAPI;
-import lee.code.shops.Data;
 import lee.code.shops.Shops;
 import lee.code.shops.lang.Lang;
 import lee.code.shops.menus.menu.menudata.MenuItem;
