@@ -7,7 +7,7 @@ import net.kyori.adventure.text.Component;
 
 @AllArgsConstructor
 public enum Lang {
-  PREFIX("&#F97D00&lShops &e➔ "),
+  PREFIX("&#F97D00&lShops &6➔ "),
   USAGE("&6&lUsage: &e{0}"),
   VALUE_FORMAT("&6${0}"),
   SELL("&c&lSell"),
