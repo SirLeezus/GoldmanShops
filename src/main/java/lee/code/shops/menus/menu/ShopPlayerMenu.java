@@ -68,9 +68,9 @@ public class ShopPlayerMenu extends MenuPaginatedGUI {
   private void addPaginatedButtons(Player player) {
     addButton(51, new MenuButton().creator(p -> MenuItem.NEXT_PAGE.createItem())
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         if (!((index + 1) >= shopSpawnData.getAllShopSpawns().size())) {
           page += 1;
-          getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
           decorate(player);
@@ -78,11 +78,11 @@ public class ShopPlayerMenu extends MenuPaginatedGUI {
       }));
     addButton(47, new MenuButton().creator(p -> MenuItem.PREVIOUS_PAGE.createItem())
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         if (page == 0) {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_PREVIOUS_PAGE.getComponent(null)));
         } else {
           page -= 1;
-          getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
           decorate(player);
