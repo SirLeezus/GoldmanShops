@@ -1,5 +1,6 @@
 package lee.code.shops.menus.menu.menudata.shop.category;
 
+import lee.code.shops.utils.ItemUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -22,6 +23,7 @@ public enum ToolItem {
   BRUSH(new ItemStack(Material.BRUSH)),
   NAME_TAG(new ItemStack(Material.NAME_TAG)),
   LEAD(new ItemStack(Material.LEAD)),
+  PET_CAPTURE_LEAD(ItemUtil.createPetCaptureItem()),
   COMPASS(new ItemStack(Material.COMPASS)),
   RECOVERY_COMPASS(new ItemStack(Material.RECOVERY_COMPASS)),
   CLOCK(new ItemStack(Material.CLOCK)),

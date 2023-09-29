@@ -200,4 +200,11 @@ public class ItemUtil {
     armor.setItemMeta(armorMeta);
     return armor;
   }
+
+  public static ItemStack createPetCaptureItem() {
+    final ItemStack lead = createItem(Material.LEAD, Lang.ITEM_CAPTURE_NAME.getString(), Lang.ITEM_CAPTURE_LORE.getString(), 1, null);
+    enchantItem(lead, Enchantment.LUCK, 1);
+    hideItemFlags(lead);
+    return lead;
+  }
 }

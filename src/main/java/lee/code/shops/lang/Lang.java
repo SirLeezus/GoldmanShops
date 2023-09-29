@@ -14,6 +14,8 @@ public enum Lang {
   BUY("&2&lBuy"),
   ON("&2&lON"),
   OFF("&c&lOFF"),
+  ITEM_CAPTURE_NAME("&5&lPet Capture Lead"),
+  ITEM_CAPTURE_LORE("&7To capture a animal, fish or\n&7monster &eright-click &7one with\n&7this lead when they have\n&elow health&7."),
   COMMAND_SET_SPAWN_SUCCESS("&aYou successfully set your shop spawn!"),
   COMMAND_REMOVE_SPAWN_SUCCESS("&aYou successfully removed your shop spawn!"),
   COMMAND_NOTIFICATIONS_SUCCESS("&aYou successfully toggled player shop purchase notifications {0}&a!"),

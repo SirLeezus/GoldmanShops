@@ -908,6 +908,7 @@ public enum ItemValue {
   DIAMOND_HORSE_ARMOR(new ItemStack(Material.DIAMOND_HORSE_ARMOR), 500, 25),
   LEATHER_HORSE_ARMOR(new ItemStack(Material.LEATHER_HORSE_ARMOR), 200, 5),
   LEAD(new ItemStack(Material.LEAD), 500, 4),
+  PET_CAPTURE_LEAD(ItemUtil.createPetCaptureItem(), 10000, 50),
   NAME_TAG(new ItemStack(Material.NAME_TAG), 500, 10),
   MUTTON(new ItemStack(Material.MUTTON), 0, 8),
   COOKED_MUTTON(new ItemStack(Material.COOKED_MUTTON), 0, 10),
@@ -1078,7 +1079,7 @@ public enum ItemValue {
   PILLAGER_SPAWNER(ItemUtil.createSpawner(EntityType.PILLAGER), 1000000, 1000),
   SHULKER_SPAWNER(ItemUtil.createSpawner(EntityType.SHULKER), 1000000, 1000),
   VINDICATOR_SPAWNER(ItemUtil.createSpawner(EntityType.VINDICATOR), 1000000, 1000),
-  ILLUSIONER_SPAWNER(ItemUtil.createSpawner(EntityType.ILLUSIONER), 1000000, 1000),
+  ILLUSIONER_SPAWNER(ItemUtil.createSpawner(EntityType.ILLUSIONER), 1000000, 1000)
   ;
   @Getter private final ItemStack item;
   @Getter private final double buy;
