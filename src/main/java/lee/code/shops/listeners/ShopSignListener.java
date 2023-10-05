@@ -25,6 +25,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
@@ -249,6 +251,7 @@ public class ShopSignListener implements Listener {
           return;
         }
       }
+      if (!blockHasSign(block)) return;
       block.getWorld().playSound(block.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1, 1);
       player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BREAK_SUCCESS.getComponent(null)));
     } else if (block.getState().getBlockData() instanceof WallSign) {
@@ -271,12 +274,23 @@ public class ShopSignListener implements Listener {
   public void onShopExplode(EntityExplodeEvent e) {
     for (Block block : new ArrayList<>(e.blockList())) {
       if (shops.getData().getSupportedSignBlocks().contains(block.getType())) {
-        final TileState shopSign = getShopSign(block);
+        final Sign shopSign = getShopSign(block);
         if (shopSign != null) e.blockList().remove(block);
       } else if (block.getState().getBlockData() instanceof WallSign) {
         final Sign sign = (Sign) block.getState();
         final UUID ownerID = getShopOwner(sign);
         if (ownerID != null) e.blockList().remove(block);
+      }
+    }
+  }
+
+  @EventHandler
+  public void onHopperTakeShopItemEvent(InventoryMoveItemEvent e) {
+    if (e.getSource().getLocation() != null) {
+      final Block block = e.getSource().getLocation().getBlock();
+      if (shops.getData().getSupportedSignBlocks().contains(block.getType())) {
+        final Sign lockSign = getShopSign(block);
+        if (lockSign != null) e.setCancelled(true);
       }
     }
   }
@@ -299,28 +313,28 @@ public class ShopSignListener implements Listener {
             for (BlockFace relativeFace : faces) {
               final Block relative = relativeBlock.getRelative(relativeFace);
               final BlockState relativeState = relative.getState();
-              if (relativeState.getBlockData() instanceof WallSign) {
-                final Sign sign = (Sign) relativeState;
-                final Directional signDirectional = (Directional) sign.getBlockData();
-                final Block relativeBlockBehind = relative.getRelative(signDirectional.getFacing().getOppositeFace());
-                if (relativeBlockBehind.equals(relativeBlock)) {
-                  final PersistentDataContainer container = sign.getPersistentDataContainer();
-                  final NamespacedKey owner = new NamespacedKey(shops, "shop-owner");
-                  if (container.has(owner, PersistentDataType.STRING)) return sign;
-                }
-              }
+              final Sign sign = getSign(relativeBlock, relative, relativeState);
+              if (sign != null) return sign;
             }
           }
         }
-      } else if (relativeBlockState.getBlockData() instanceof WallSign) {
-        final Sign sign = (Sign) relativeBlockState;
-        final Directional signDirectional = (Directional) sign.getBlockData();
-        final Block relativeBlockBehind = relativeBlock.getRelative(signDirectional.getFacing().getOppositeFace());
-        if (relativeBlockBehind.equals(block)) {
-          final PersistentDataContainer container = sign.getPersistentDataContainer();
-          final NamespacedKey owner = new NamespacedKey(shops, "shop-owner");
-          if (container.has(owner, PersistentDataType.STRING)) return sign;
-        }
+      } else {
+        final Sign sign = getSign(block, relativeBlock, relativeBlockState);
+        if (sign != null) return sign;
+      }
+    }
+    return null;
+  }
+
+  private Sign getSign(Block block, Block relativeBlock, BlockState relativeBlockState) {
+    if (relativeBlockState.getBlockData() instanceof WallSign) {
+      final Sign sign = (Sign) relativeBlockState;
+      final Directional signDirectional = (Directional) sign.getBlockData();
+      final Block relativeBlockBehind = relativeBlock.getRelative(signDirectional.getFacing().getOppositeFace());
+      if (relativeBlockBehind.equals(block)) {
+        final PersistentDataContainer container = sign.getPersistentDataContainer();
+        final NamespacedKey owner = new NamespacedKey(shops, "shop-owner");
+        if (container.has(owner, PersistentDataType.STRING)) return sign;
       }
     }
     return null;
@@ -363,6 +377,12 @@ public class ShopSignListener implements Listener {
       block.getBoundingBox().getCenter().getZ(),
       10, 0.2, 0.2, 0, 0.09, new ItemStack(Material.EMERALD));
     block.getWorld().playSound(block.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, (float) 1, (float) 1);
+  }
+
+  private boolean blockHasSign(Block block) {
+    final BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+    for (BlockFace face : faces) if (block.getRelative(face).getState().getBlockData() instanceof WallSign) return true;
+    return false;
   }
 
   private Inventory getContainerInventory(Block container) {
