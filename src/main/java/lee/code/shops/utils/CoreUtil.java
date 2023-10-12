@@ -1,5 +1,6 @@
 package lee.code.shops.utils;
 
+import lee.code.shops.lang.Lang;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -7,6 +8,8 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
@@ -74,5 +77,27 @@ public class CoreUtil {
     final int index = input.indexOf(character);
     if (index == -1) return input;
     else return input.substring(0, index);
+  }
+
+  public static void teleportShop(Player player, Location targetLocation, String targetShop) {
+    player.getWorld().getChunkAtAsync(targetLocation).thenAccept(chunk -> {
+      final Block targetBlock1 = targetLocation.clone().add(0, 2, 0).getBlock();
+      final Block targetBlock2 = targetLocation.clone().add(0, 1, 0).getBlock();
+      final Block targetBlock3 = targetLocation.getBlock();
+      if (!targetBlock1.getType().isAir() || !targetBlock2.getType().isAir() || !targetBlock3.getType().isAir()) {
+        player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_COMMAND_SPAWN_NOT_SAFE.getComponent(new String[]{targetShop})));
+        return;
+      }
+      final Block targetBlock4 = targetLocation.clone().subtract(0, 1, 0).getBlock();
+      final Material material = targetBlock4.getType();
+      if (material.isAir() || material.equals(Material.LAVA) || material.equals(Material.FIRE) || material.equals(Material.COBWEB)) {
+        player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_COMMAND_SPAWN_NOT_SAFE.getComponent(new String[]{targetShop})));
+        return;
+      }
+      player.teleportAsync(targetLocation).thenAccept(result -> {
+        if (result) player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.MENU_SHOP_PLAYER_TELEPORT_SUCCESSFUL.getComponent(new String[]{targetShop})));
+        else player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.MENU_SHOP_PLAYER_TELEPORT_FAILED.getComponent(new String[]{targetShop})));
+      });
+    });
   }
 }

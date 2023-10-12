@@ -98,6 +98,7 @@ public enum Lang {
   ERROR_NOT_CONSOLE_COMMAND("&cThis command does not work in console."),
   ERROR_NO_PLAYER_DATA("&cCould not find any player data for &6{0}&c."),
   ERROR_COMMAND_SPAWN_NO_SPAWN("&cThe player &6{0} &cdoes not have a shop spawn set."),
+  ERROR_COMMAND_SPAWN_NOT_SAFE("&cThe player &6{0} &cdoes not have a safe shop spawn. Please contact the shop owner to fix this."),
   ERROR_COMMAND_REMOVE_SPAWN_NO_SPAWN("&cYou don't have a player shop spawn set."),
   ERROR_COMMAND_ADMIN_REMOVE_SPAWN_NO_SPAWN("&cThe player &6{0} &cdoes not have a player shop spawn."),
 

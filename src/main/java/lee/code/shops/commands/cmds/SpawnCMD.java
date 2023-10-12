@@ -70,10 +70,7 @@ public class SpawnCMD extends SubCommand {
       player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_COMMAND_SPAWN_NO_SPAWN.getComponent(new String[]{targetName})));
       return;
     }
-    player.teleportAsync(shopSpawnData.getSpawn(targetID)).thenAccept(result -> {
-      if (result) player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.MENU_SHOP_PLAYER_TELEPORT_SUCCESSFUL.getComponent(new String[]{targetName})));
-      else player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.MENU_SHOP_PLAYER_TELEPORT_FAILED.getComponent(new String[]{targetName})));
-    });
+    CoreUtil.teleportShop(player, shopSpawnData.getSpawn(targetID), targetName);
   }
 
   @Override
