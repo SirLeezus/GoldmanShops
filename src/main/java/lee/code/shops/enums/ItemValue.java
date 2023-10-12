@@ -861,6 +861,7 @@ public enum ItemValue {
   ROTTEN_FLESH(new ItemStack(Material.ROTTEN_FLESH), 0, 0.01),
   ENDER_PEARL(new ItemStack(Material.ENDER_PEARL), 800, 7),
   BLAZE_ROD(new ItemStack(Material.BLAZE_ROD), 0, 2),
+  CAPTURE_WAND(ItemUtil.createCaptureWandItem(), 10000, 50),
   GHAST_TEAR(new ItemStack(Material.GHAST_TEAR), 0, 10),
   GOLD_NUGGET(new ItemStack(Material.GOLD_NUGGET), 0, 1.5),
   NETHER_WART(new ItemStack(Material.NETHER_WART), 700, 6),

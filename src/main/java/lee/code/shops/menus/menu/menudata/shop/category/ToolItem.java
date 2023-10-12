@@ -24,6 +24,7 @@ public enum ToolItem {
   NAME_TAG(new ItemStack(Material.NAME_TAG)),
   LEAD(new ItemStack(Material.LEAD)),
   PET_CAPTURE_LEAD(ItemUtil.createPetCaptureItem()),
+  CAPTURE_WAND_LEAD(ItemUtil.createCaptureWandItem()),
   COMPASS(new ItemStack(Material.COMPASS)),
   RECOVERY_COMPASS(new ItemStack(Material.RECOVERY_COMPASS)),
   CLOCK(new ItemStack(Material.CLOCK)),
