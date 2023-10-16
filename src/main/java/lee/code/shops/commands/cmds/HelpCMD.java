@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class HelpCMD extends SubCommand {
-
   private final Shops shops;
 
   public HelpCMD(Shops shops) {
