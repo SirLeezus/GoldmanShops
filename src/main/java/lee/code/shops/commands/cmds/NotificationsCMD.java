@@ -35,7 +35,7 @@ public class NotificationsCMD extends SubCommand {
 
   @Override
   public String getPermission() {
-    return "shops.command.spawn";
+    return "shops.command.notifications";
   }
 
   @Override
