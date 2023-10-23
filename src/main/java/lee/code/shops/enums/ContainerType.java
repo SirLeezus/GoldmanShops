@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.bukkit.Material;
 
 @AllArgsConstructor
-public enum SignBlock {
+public enum ContainerType {
   CHEST(Material.CHEST),
   BARREL(Material.BARREL),
   TRAPPED_CHEST(Material.TRAPPED_CHEST),

@@ -214,4 +214,11 @@ public class ItemUtil {
     hideItemFlags(wand);
     return wand;
   }
+
+  public static ItemStack createSellWandItem() {
+    final ItemStack wand = createItem(Material.BLAZE_ROD, Lang.ITEM_SELL_WAND_NAME.getString(), Lang.ITEM_SELL_WAND_LORE.getString(), 3, null);
+    enchantItem(wand, Enchantment.LUCK, 1);
+    hideItemFlags(wand);
+    return wand;
+  }
 }

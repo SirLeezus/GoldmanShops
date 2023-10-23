@@ -26,7 +26,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
@@ -82,7 +81,7 @@ public class ShopSignListener implements Listener {
       return;
     }
     final Block blockBehind = block.getRelative(directional.getFacing().getOppositeFace());
-    if (!shops.getData().getSupportedSignBlocks().contains(blockBehind.getType())) {
+    if (!shops.getData().getSupportedContainerType().contains(blockBehind.getType())) {
       player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_SHOP_SIGN_CREATE_NOT_SUPPORTED_BLOCK.getComponent(new String[]{CoreUtil.capitalize(blockBehind.getType().name())})));
       return;
     }
@@ -222,7 +221,7 @@ public class ShopSignListener implements Listener {
           if (cachePlayers.hasNotificationsOn(ownerID)) PlayerDataAPI.sendPlayerMessageIfOnline(ownerID, VariableUtil.parseVariables(Lang.PREFIX.getComponent(null).append(Lang.SHOP_SIGN_BUY_OWNER_SUCCESS.getComponent(new String[]{ColorAPI.getNameColor(playerID, player.getName()), CoreUtil.parseValue(amount), Lang.VALUE_FORMAT.getString(new String[]{CoreUtil.parseValue(cost)})})), item));
         }
       }
-    } else if (shops.getData().getSupportedSignBlocks().contains(block.getType())) {
+    } else if (shops.getData().getSupportedContainerType().contains(block.getType())) {
       final Sign sign = getShopSign(block);
       if (sign == null) return;
       final UUID ownerID = getShopOwner(sign);
@@ -239,7 +238,7 @@ public class ShopSignListener implements Listener {
     final Player player = e.getPlayer();
     final Block block = e.getBlock();
     final UUID playerID = player.getUniqueId();
-    if (shops.getData().getSupportedSignBlocks().contains(e.getBlock().getType())) {
+    if (shops.getData().getSupportedContainerType().contains(e.getBlock().getType())) {
       final Sign sign = getShopSign(block);
       if (sign == null) return;
       final UUID ownerID = getShopOwner(sign);
@@ -273,7 +272,7 @@ public class ShopSignListener implements Listener {
   @EventHandler
   public void onShopExplode(EntityExplodeEvent e) {
     for (Block block : new ArrayList<>(e.blockList())) {
-      if (shops.getData().getSupportedSignBlocks().contains(block.getType())) {
+      if (shops.getData().getSupportedContainerType().contains(block.getType())) {
         final Sign shopSign = getShopSign(block);
         if (shopSign != null) e.blockList().remove(block);
       } else if (block.getState().getBlockData() instanceof WallSign) {
@@ -288,7 +287,7 @@ public class ShopSignListener implements Listener {
   public void onHopperTakeShopItemEvent(InventoryMoveItemEvent e) {
     if (e.getSource().getLocation() != null) {
       final Block block = e.getSource().getLocation().getBlock();
-      if (shops.getData().getSupportedSignBlocks().contains(block.getType())) {
+      if (shops.getData().getSupportedContainerType().contains(block.getType())) {
         final Sign lockSign = getShopSign(block);
         if (lockSign != null) e.setCancelled(true);
       }

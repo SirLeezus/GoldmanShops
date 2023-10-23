@@ -1,7 +1,7 @@
 package lee.code.shops;
 
 import lee.code.shops.enums.ItemValue;
-import lee.code.shops.enums.SignBlock;
+import lee.code.shops.enums.ContainerType;
 import lee.code.shops.utils.CoreUtil;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Data {
   @Getter private final LinkedHashMap<ItemStack, Double> itemSellValueSortedData = new LinkedHashMap<>();
   private final ConcurrentHashMap<ItemStack, String> itemValueData = new ConcurrentHashMap<>();
-  @Getter private final Set<Material> supportedSignBlocks = new HashSet<>();
+  @Getter private final Set<Material> supportedContainerType = new HashSet<>();
 
   public double getItemBuyValue(ItemStack item) {
     if (!itemValueData.containsKey(item)) return 0;
@@ -36,6 +36,6 @@ public class Data {
       itemValueData.put(itemValue.getItem(), itemValue.name());
     }
     itemSellValueSortedData.putAll(CoreUtil.sortByValue(itemSellValueMap, Comparator.reverseOrder()));
-    for (SignBlock signBlock : SignBlock.values()) supportedSignBlocks.add(signBlock.getMaterial());
+    for (ContainerType containerType : ContainerType.values()) supportedContainerType.add(containerType.getMaterial());
   }
 }
