@@ -713,7 +713,7 @@ public enum ItemValue {
   STICK(new ItemStack(Material.STICK), 0, 0.2),
   BOWL(new ItemStack(Material.BOWL), 100, 0.3),
   MUSHROOM_STEW(new ItemStack(Material.MUSHROOM_STEW), 0, 5),
-  STRING(new ItemStack(Material.STRING), 0, 2),
+  STRING(new ItemStack(Material.STRING), 0, 0.5),
   FEATHER(new ItemStack(Material.FEATHER), 0, 3),
   GUNPOWDER(new ItemStack(Material.GUNPOWDER), 0, 6),
   WHEAT_SEEDS(new ItemStack(Material.WHEAT_SEEDS), 100, 0.1),
