@@ -20,6 +20,7 @@ public enum BasicBlockItem {
   NETHERRACK(new ItemStack(Material.NETHERRACK)),
   MUD(new ItemStack(Material.MUD)),
   WHITE_WOOL(new ItemStack(Material.WHITE_WOOL)),
+  SLIME_BLOCK(new ItemStack(Material.SLIME_BLOCK)),
 
   ;
 
