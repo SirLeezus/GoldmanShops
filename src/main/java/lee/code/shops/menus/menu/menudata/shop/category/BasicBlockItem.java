@@ -21,6 +21,7 @@ public enum BasicBlockItem {
   MUD(new ItemStack(Material.MUD)),
   WHITE_WOOL(new ItemStack(Material.WHITE_WOOL)),
   SLIME_BLOCK(new ItemStack(Material.SLIME_BLOCK)),
+  SPONGE(new ItemStack(Material.SPONGE)),
 
   ;
 

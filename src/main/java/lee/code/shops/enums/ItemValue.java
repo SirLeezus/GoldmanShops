@@ -123,7 +123,7 @@ public enum ItemValue {
   STRIPPED_CRIMSON_STEM(new ItemStack(Material.STRIPPED_CRIMSON_STEM), 0, 2),
   STRIPPED_WARPED_STEM(new ItemStack(Material.STRIPPED_WARPED_STEM), 0, 2),
   STRIPPED_BAMBOO_BLOCK(new ItemStack(Material.STRIPPED_BAMBOO_BLOCK), 0, 2),
-  SPONGE(new ItemStack(Material.SPONGE), 0, 5),
+  SPONGE(new ItemStack(Material.SPONGE), 50, 5),
   WET_SPONGE(new ItemStack(Material.WET_SPONGE), 0, 4),
   GLASS(new ItemStack(Material.GLASS), 0, 1),
   TINTED_GLASS(new ItemStack(Material.TINTED_GLASS), 0, 1),
