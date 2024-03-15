@@ -58,7 +58,7 @@ public enum ItemValue {
   SUSPICIOUS_SAND(new ItemStack(Material.SUSPICIOUS_SAND), 0, 1),
   SUSPICIOUS_GRAVEL(new ItemStack(Material.SUSPICIOUS_GRAVEL), 0, 1),
   RED_SAND(new ItemStack(Material.RED_SAND), 50, 1),
-  GRAVEL(new ItemStack(Material.GRAVEL), 0, 1),
+  GRAVEL(new ItemStack(Material.GRAVEL), 50, 1),
   ANCIENT_DEBRIS(new ItemStack(Material.ANCIENT_DEBRIS), 0, 7),
   COAL_BLOCK(new ItemStack(Material.COAL_BLOCK), 0, 18),
   AMETHYST_BLOCK(new ItemStack(Material.AMETHYST_BLOCK), 0, 5),

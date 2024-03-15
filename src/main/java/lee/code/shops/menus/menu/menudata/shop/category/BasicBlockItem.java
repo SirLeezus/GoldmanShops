@@ -11,6 +11,7 @@ public enum BasicBlockItem {
   SAND(new ItemStack(Material.SAND)),
   RED_SAND(new ItemStack(Material.RED_SAND)),
   DIRT(new ItemStack(Material.DIRT)),
+  GRAVEL(new ItemStack(Material.GRAVEL)),
   COBBLESTONE(new ItemStack(Material.COBBLESTONE)),
   COBBLED_DEEPSLATE(new ItemStack(Material.COBBLED_DEEPSLATE)),
   GRANITE(new ItemStack(Material.GRANITE)),
